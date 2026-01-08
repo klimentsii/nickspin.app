@@ -1,0 +1,158 @@
+$bg-primary: #0f0f0f;
+$bg-secondary: #1a1a1a;
+$text-primary: #ffffff;
+$text-secondary: #b3b3b3;
+$accent: #6366f1;
+$accent-hover: #818cf8;
+$border-color: #333333;
+$hover-bg: #2a2a2a;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $bg-primary;
+  color: $text-primary;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: 250px 1fr 280px;
+  min-height: 100vh;
+  gap: 1px;
+  background-color: $border-color;
+}
+
+.sidebar {
+  background-color: $bg-secondary;
+  padding: 2rem 1.5rem;
+  border-right: 1px solid $border-color;
+}
+
+.menu-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: $text-primary;
+}
+
+.menu-list {
+  list-style: none;
+}
+
+.menu-item {
+  margin-bottom: 0.5rem;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: $text-secondary;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: $hover-bg;
+    color: $text-primary;
+  }
+  
+  &.active {
+    background-color: $accent;
+    color: $text-primary;
+    font-weight: 500;
+  }
+}
+
+.game-logo {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.game-name {
+  flex: 1;
+}
+
+.main-content {
+  background-color: $bg-primary;
+  padding: 3rem 2rem;
+  overflow-y: auto;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.app-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: $text-primary;
+}
+
+.spin-button {
+  background-color: $accent;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 3rem;
+  color: $text-primary;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: $accent-hover;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.settings-panel {
+  background-color: $bg-secondary;
+  padding: 2rem 1.5rem;
+  border-left: 1px solid $border-color;
+}
+
+@media (max-width: 1024px) {
+  .app-container {
+    grid-template-columns: 200px 1fr 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  
+  .sidebar,
+  .settings-panel {
+    border: none;
+    border-bottom: 1px solid $border-color;
+  }
+  
+  .settings-panel {
+    border-top: 1px solid $border-color;
+    border-bottom: none;
+  }
+}
