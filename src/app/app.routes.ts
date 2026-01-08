@@ -1,14 +1,13 @@
 import { Routes } from '@angular/router';
-import { EmptyComponent } from './empty.component';
 
 export const routes: Routes = [
   {
-    path: 'game/:id',
-    component: EmptyComponent
+    path: ':id',
+    children: []
   },
   {
     path: '',
-    redirectTo: '/game/roblox',
+    redirectTo: '/roblox',
     pathMatch: 'full'
   }
 ];

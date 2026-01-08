@@ -1,11 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { GAMES, Game } from './games.constants';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -17,6 +17,9 @@ export class App {
   protected readonly currentUrl = signal(this.router.url);
 
   constructor() {
+    if (this.router.url === '/') {
+      this.router.navigate(['/roblox']);
+    }
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
@@ -26,7 +29,7 @@ export class App {
 
   protected readonly activeGameId = computed(() => {
     const url = this.currentUrl();
-    const match = url.match(/\/game\/([^\/]+)/);
+    const match = url.match(/\/([^\/]+)/);
     return match ? match[1] : 'roblox';
   });
 
@@ -36,5 +39,9 @@ export class App {
 
   protected isActive(gameId: string): boolean {
     return this.activeGameId() === gameId;
+  }
+
+  protected selectGame(gameId: string): void {
+    this.router.navigate(['/', gameId]);
   }
 }
