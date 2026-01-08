@@ -1,59 +1,37 @@
-# NickspinApp
+# 🌀 NameSpin — The Context-Aware Alias Engine
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.0.
+**Spin your identity. Land your legend.**
 
-## Development server
+NameSpin is an AI-powered generator that crafts perfect gaming aliases, usernames, and brand handles by deeply understanding the context of your game, platform, and desired persona. It's the end of random word salads.
 
-To start a local development server, run:
+## 🚀 The Problem & Our Solution
 
-```bash
-ng serve
-```
+Finding a cool, unique, and available username is a pain. Traditional generators are dumb and random.
+**NameSpin is smart and contextual.** It analyzes game lore, community slang, and naming trends to suggest identities that actually fit.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## ✨ Core Features
 
-## Code scaffolding
+### 🎮 **Game-First Generators**
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Dedicated engines for **Valorant, CS2, Dota 2, Minecraft, LoL, Fortnite, WoW** and 50+ titles. Each understands the game's unique culture.
 
-```bash
-ng generate component component-name
-```
+### ⚙️ **Precision Spinner**
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Control your spin with filters:
 
-```bash
-ng generate --help
-```
+- **Style:** `Pro`, `Meme`, `Dark`, `Anime`, `Classic`
+- **Vibe:** `Aggressive`, `Smart`, `Funny`, `Mysterious`
+- **Length & Complexity**
+- **Linguistic Roots** (Latin, Japanese, Norse, etc.)
 
-## Building
+### 🔍 **Live Availability Check**
 
-To build the project run:
+Real-time lookup across **Steam, Xbox Live, PSN, Riot, Twitch, Discord, and social media**. Get suggestions if your name is taken.
 
-```bash
-ng build
-```
+### 🧠 **AI-Powered Spin Engine**
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Our fine-tuned model doesn't just mash words. It **creates coherent, vibe-matched personas** with semantic understanding.
 
-## Running unit tests
+### 📚 **Identity Vault**
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Save, rank, and export your favorite names. Share sets with friends for feedback.
