@@ -1,4 +1,4 @@
-# 🌀 NameSpin — The Context-Aware Alias Engine
+# 🌀 NickSpin — The Context-Aware Alias Engine
 
 **Spin your identity. Land your legend.**
 
