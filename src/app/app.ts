@@ -23,6 +23,18 @@ export class App implements OnInit {
   
   protected readonly currentUrl = signal(this.router.url);
 
+  constructor() {
+    effect(() => {
+      const color = this.currentGameColor();
+      if (typeof document !== 'undefined') {
+        const darkerColor = this.darkenColor(color, 0.5);
+        document.body.style.background = `linear-gradient(to bottom right, ${color}, ${darkerColor})`;
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundSize = 'cover';
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.games.forEach(game => {
       this.iconRegistry.addSvgIcon(
@@ -36,13 +48,6 @@ export class App implements OnInit {
       .subscribe((event: NavigationEnd) => {
         this.currentUrl.set(event.url);
       });
-
-    effect(() => {
-      const color = this.currentGameColor();
-      if (typeof document !== 'undefined') {
-        document.body.style.backgroundColor = color;
-      }
-    });
   }
 
   protected nameLength: number = 8;
@@ -91,5 +96,24 @@ export class App implements OnInit {
   protected getGameColor(gameId: string): string {
     const game = GAMES.find(g => g.id === gameId);
     return game ? game.color : '#6366f1';
+  }
+
+  private darkenColor(color: string, amount: number): string {
+    const hex = color.replace('#', '');
+    
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    const newR = Math.max(0, Math.floor(r * (1 - amount)));
+    const newG = Math.max(0, Math.floor(g * (1 - amount)));
+    const newB = Math.max(0, Math.floor(b * (1 - amount)));
+    
+    const toHex = (n: number) => {
+      const hex = n.toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
+    
+    return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
   }
 }
