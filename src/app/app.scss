@@ -276,6 +276,26 @@ body {
   margin: 0 auto;
 }
 
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  
+  img {
+    width: 300px;
+  }
+}
+
+.app-subtitle {
+  color: $text-secondary;
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0;
+  text-align: center;
+}
+
 .app-title {
   font-size: 3rem;
   font-weight: 700;

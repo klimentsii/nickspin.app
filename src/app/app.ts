@@ -81,6 +81,10 @@ export class App implements OnInit {
   ngOnInit(): void {
     this.games.forEach(game => {
       this.iconRegistry.addSvgIcon(
+        'game',
+        this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/game.svg`)
+      );
+      this.iconRegistry.addSvgIcon(
         game.id,
         this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/${game.id}.svg`)
       );
