@@ -1,14 +1,10 @@
-export interface GameSettings {
-  theme: 'Dark' | 'Light';
-  language: 'Russian' | 'English';
-  notifications: boolean;
-}
+
 
 export interface Game {
   name: string;
   logo: string;
   id: string;
-  defaultSettings: GameSettings;
+  defaultSettings: null;
 }
 
 export interface Language {
@@ -21,162 +17,102 @@ export const GAMES: Game[] = [
     name: 'Counter-Strike 2',
     logo: '🔫',
     id: 'cs2',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Dota 2',
     logo: '⚔️',
     id: 'dota2',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'VALORANT',
     logo: '🎯',
     id: 'valorant',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'League of Legends',
     logo: '🏆',
     id: 'lol',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Fortnite',
     logo: '💣',
     id: 'fortnite',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Minecraft',
     logo: '⛏️',
     id: 'minecraft',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
 
   {
     name: 'PUBG',
     logo: '🎯',
     id: 'pubg',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'GTA V',
     logo: '🚗',
     id: 'gta5',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Rainbow Six Siege',
     logo: '🔍',
     id: 'r6',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'World of Warcraft',
     logo: '🐉',
     id: 'wow',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Cyberpunk 2077',
     logo: '🔮',
     id: 'cyberpunk',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Team Fortress 2',
     logo: '🎩',
     id: 'tf2',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Palworld',
     logo: '🐾',
     id: 'palworld',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Roblox',
     logo: '🎮',
     id: 'roblox',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
   {
     name: 'Among Us',
     logo: '👨‍🚀',
     id: 'amongus',
-    defaultSettings: {
-      theme: 'Dark',
-      language: 'English',
-      notifications: true,
-    },
+    defaultSettings: null,
   },
 ];
 
 export const LANGUAGES: Language[] = [
   { code: 'en', name: 'English' },
-  { code: 'ru', name: 'Russian' },
-  { code: 'jp', name: 'Japanese' },
-  { code: 'de', name: 'German' },
-  { code: 'fr', name: 'French' },
-  { code: 'es', name: 'Spanish' },
-  { code: 'cn', name: 'Chinese' },
-  { code: 'kr', name: 'Korean' },
+  { code: 'ru', name: 'Русский' },
+  { code: 'jp', name: '日本語' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'fr', name: 'Français' },
+  { code: 'es', name: 'Español' },
+  { code: 'cn', name: '中文' },
+  { code: 'kr', name: '한국어' },
 ];
