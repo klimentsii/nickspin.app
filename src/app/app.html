@@ -1,7 +1,10 @@
 <div class="app-container" [style.background-color]="currentGameColor()">
   <aside class="sidebar">
     <nav class="menu">
-      <h2 class="menu-title">Menu</h2>
+      <h2 class="menu-title">
+        <span class="menu-title-icon">🎮</span>
+        <span class="menu-title-text">Games</span>
+      </h2>
       <ul class="menu-list">
         @for (game of games; track game.id) {
         <li class="menu-item">

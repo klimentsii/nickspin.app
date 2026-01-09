@@ -55,6 +55,11 @@ export class App {
     return game ? game.bgColor : GAMES.find(g => g.id === 'roblox')?.bgColor || '#6B1A1A';
   });
 
+  protected readonly currentGame = computed(() => {
+    const game = GAMES.find(g => g.id === this.currentGameId());
+    return game || GAMES.find(g => g.id === 'roblox') || GAMES[0];
+  });
+
   protected getLanguageName(code: string): string {
     const lang = this.languages.find((l) => l.code === code);
     return lang ? lang.name : 'English';
