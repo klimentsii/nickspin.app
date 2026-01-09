@@ -15,6 +15,7 @@
             [class.active]="isActive(game.id)"
             [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
             [style.--game-color]="getGameColor(game.id)"
+            [style.--game-color-rgb]="getGameColorRgb(game.id)"
             class="menu-link"
           >
               <span class="game-logo">

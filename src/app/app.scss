@@ -133,6 +133,18 @@ body {
 .menu-list {
   list-style: none;
   flex: 1;
+
+  ::ng-deep mat-icon {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 24px !important;
+    
+    svg {
+      width: 24px !important;
+      height: 24px !important;
+      display: block;
+    }
+  }
 }
 
 .menu-item {
@@ -147,17 +159,28 @@ body {
   color: $text-secondary;
   text-decoration: none;
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   font-weight: 500;
+  position: relative;
+  transform: translateX(0);
 
   &:hover {
-    background-color: $hover-bg;
     color: $text-primary;
+    transform: translateX(4px);
     
     &.active {
       color: var(--game-color);
     }
+  }
+
+  &:active {
+    transform: translateX(2px) scale(0.98);
+    transition: all 0.1s ease;
+  }
+
+  &.active {
+    color: var(--game-color);
   }
 }
 
@@ -170,6 +193,42 @@ body {
   height: 24px;
   flex-shrink: 0;
   text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+
+  .menu-link.active & {
+    background-color: rgba(var(--game-color-rgb, 99, 102, 241), 0.15);
+    box-shadow: 
+      0 0 8px rgba(var(--game-color-rgb, 99, 102, 241), 0.2),
+      0 0 12px rgba(var(--game-color-rgb, 99, 102, 241), 0.15),
+      inset 0 0 8px rgba(var(--game-color-rgb, 99, 102, 241), 0.15);
+  }
+
+  .menu-link:hover & {
+    transform: scale(1.15);
+  }
+
+  .menu-link:active & {
+    transform: scale(0.9);
+    transition: transform 0.1s ease;
+  }
+
+  ::ng-deep mat-icon {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 24px !important;
+    
+    svg {
+      width: 24px !important;
+      height: 24px !important;
+      display: block;
+    }
+  }
+
+  .menu-link.active ::ng-deep mat-icon {
+    filter: drop-shadow(0 0 8px rgba(var(--game-color-rgb, 99, 102, 241), 0.25));
+  }
 }
 
 .roblox-icon {
