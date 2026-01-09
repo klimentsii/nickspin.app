@@ -72,30 +72,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-y: hidden;
-  overflow-x: hidden;
-  
-  .sidebar:hover & {
-    overflow-y: auto;
-    padding-right: 0.75rem;
-  }
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-  }
+  overflow: hidden;
 }
 
 .menu-title {
@@ -108,6 +85,11 @@ body {
   gap: 0.75rem;
   flex-shrink: 0;
   padding: 0 12px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: 0;
+  padding-bottom: 1rem;
 }
 
 .menu-title-icon {
@@ -133,6 +115,30 @@ body {
 .menu-list {
   list-style: none;
   flex: 1;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  
+  .sidebar:hover & {
+    overflow-y: auto;
+    padding-right: 0.75rem;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
 
   ::ng-deep mat-icon {
     width: 24px !important;
