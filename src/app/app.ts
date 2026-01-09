@@ -4,12 +4,13 @@ import { GAMES, Language, LANGUAGES } from './games.constants';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer } from '@angular/platform-browser';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatTooltipModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -116,6 +117,11 @@ export class App implements OnInit {
   protected readonly currentGameColor = computed(() => {
     const game = GAMES.find(g => g.id === this.currentGameId());
     return game ? game.bgColor : GAMES.find(g => g.id === 'roblox')?.bgColor || '#6B1A1A';
+  });
+
+  protected readonly currentGameAccentColor = computed(() => {
+    const game = GAMES.find(g => g.id === this.currentGameId());
+    return game ? game.color : GAMES.find(g => g.id === 'roblox')?.color || '#C53B3B';
   });
 
   protected readonly currentGame = computed(() => {
