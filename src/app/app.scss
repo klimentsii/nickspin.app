@@ -1,11 +1,10 @@
-$bg-primary: #0f0f0f;
-$bg-secondary: #1a1a1a;
+$bg-secondary: #1a1a1a80;
 $text-primary: #ffffff;
 $text-secondary: #b3b3b3;
 $accent: #6366f1;
 $accent-hover: #818cf8;
 $border-color: #333333;
-$hover-bg: #2a2a2a;
+$hover-bg: #2a2a2a5e;
 
 * {
   margin: 0;
@@ -14,7 +13,6 @@ $hover-bg: #2a2a2a;
 }
 
 body {
-  background-color: $bg-primary;
   color: $text-primary;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
@@ -22,16 +20,59 @@ body {
 
 .app-container {
   display: grid;
-  grid-template-columns: 250px 1fr 280px;
+  grid-template-columns: 80px 1fr 280px;
   min-height: 100vh;
-  gap: 1px;
-  background-color: $border-color;
+  gap: 1rem;
+  background-color: transparent;
+  padding: 1rem;
+  transition: grid-template-columns 0.3s ease;
+
+  &:has(.sidebar:hover) {
+    grid-template-columns: 250px 1fr 280px;
+  }
 }
 
 .sidebar {
   background-color: $bg-secondary;
-  padding: 2rem 1.5rem;
-  border-right: 1px solid $border-color;
+  padding: 2rem 1rem;
+  border-radius: 25px;
+  margin: 0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  
+  .sidebar:hover & {
+    overflow-y: auto;
+    padding-right: 0.75rem;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
 }
 
 .menu-title {
@@ -39,10 +80,19 @@ body {
   font-weight: 600;
   margin-bottom: 2rem;
   color: $text-primary;
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+  flex-shrink: 0;
+
+  .sidebar:hover & {
+    opacity: 1;
+  }
 }
 
 .menu-list {
   list-style: none;
+  flex: 1;
 }
 
 .menu-item {
@@ -53,22 +103,21 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem;
   color: $text-secondary;
   text-decoration: none;
   border-radius: 8px;
   transition: all 0.2s ease;
   cursor: pointer;
+  font-weight: 500;
 
   &:hover {
     background-color: $hover-bg;
     color: $text-primary;
-  }
-
-  &.active {
-    background-color: $accent;
-    color: $text-primary;
-    font-weight: 500;
+    
+    &.active {
+      color: var(--game-color);
+    }
   }
 }
 
@@ -79,14 +128,22 @@ body {
   justify-content: center;
   width: 24px;
   height: 24px;
+  flex-shrink: 0;
 }
 
 .game-name {
   flex: 1;
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+  overflow: hidden;
+
+  .sidebar:hover & {
+    opacity: 1;
+  }
 }
 
 .main-content {
-  background-color: $bg-primary;
   padding: 3rem 2rem;
   overflow-y: auto;
 }
@@ -132,17 +189,19 @@ body {
 .settings-panel {
   background-color: $bg-secondary;
   padding: 2rem 1.5rem;
-  border-left: 1px solid $border-color;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100vh - 2rem);
   gap: 2rem;
+  border-radius: 25px;
+  overflow: hidden;
 }
 
 .panel-header {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  flex-shrink: 0;
 }
 
 .panel-title {
@@ -162,6 +221,27 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
 }
 
 .filter-card {
@@ -202,9 +282,11 @@ body {
   border-radius: 3px;
   outline: none;
   -webkit-appearance: none;
+  appearance: none;
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
+    appearance: none;
     width: 20px;
     height: 20px;
     background: $accent;
@@ -335,7 +417,6 @@ body {
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: $bg-primary;
   border: 1px solid $border-color;
   border-radius: 8px;
   padding: 0.5rem;

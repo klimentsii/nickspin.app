@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { GAMES, Language, LANGUAGES } from './games.constants';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -16,6 +17,23 @@ export class App {
   protected readonly games = GAMES;
   protected readonly languages = LANGUAGES;
 
+  protected readonly currentUrl = signal(this.router.url);
+
+  constructor() {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.currentUrl.set(event.url);
+      });
+
+    effect(() => {
+      const color = this.currentGameColor();
+      if (typeof document !== 'undefined') {
+        document.body.style.backgroundColor = color;
+      }
+    });
+  }
+
   protected nameLength: number = 8;
 
   protected includeNumbers: boolean = false;
@@ -25,6 +43,17 @@ export class App {
   protected aiWishes: string = '';
   protected selectedLanguage: string = 'en';
   protected selectedGender: string = 'any';
+
+  protected readonly currentGameId = computed(() => {
+    const url = this.currentUrl().replace(/^\//, '');
+    const game = GAMES.find(g => g.id === url);
+    return game ? game.id : 'roblox';
+  });
+
+  protected readonly currentGameColor = computed(() => {
+    const game = GAMES.find(g => g.id === this.currentGameId());
+    return game ? game.bgColor : GAMES.find(g => g.id === 'roblox')?.bgColor || '#6B1A1A';
+  });
 
   protected getLanguageName(code: string): string {
     const lang = this.languages.find((l) => l.code === code);
@@ -41,5 +70,10 @@ export class App {
 
   protected isActive(gameId: string): boolean {
     return this.router.url.includes(gameId);
+  }
+
+  protected getGameColor(gameId: string): string {
+    const game = GAMES.find(g => g.id === gameId);
+    return game ? game.color : '#6366f1';
   }
 }

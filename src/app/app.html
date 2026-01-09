@@ -1,4 +1,4 @@
-<div class="app-container">
+<div class="app-container" [style.background-color]="currentGameColor()">
   <aside class="sidebar">
     <nav class="menu">
       <h2 class="menu-title">Menu</h2>
@@ -8,6 +8,8 @@
           <a
             (click)="selectGame(game.id); $event.preventDefault()"
             [class.active]="isActive(game.id)"
+            [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
+            [style.--game-color]="getGameColor(game.id)"
             class="menu-link"
           >
             <span class="game-logo">{{ game.logo }}</span>
@@ -33,7 +35,6 @@
     </div>
 
     <div class="filters-container">
-      <!-- Length -->
       <div class="filter-card">
         <div class="filter-header">
           <span class="filter-name">Length</span>
@@ -46,7 +47,6 @@
         </div>
       </div>
 
-      <!-- Numbers -->
       <div class="filter-card">
         <div class="toggle-group">
           <label class="toggle-label">
@@ -62,7 +62,6 @@
         </div>
       </div>
 
-      <!-- Language -->
       <div class="filter-card">
         <label class="dropdown-label">Language</label>
         <div class="custom-dropdown" (click)="dropdownOpen = !dropdownOpen">
@@ -88,7 +87,6 @@
         </div>
       </div>
 
-      <!-- Pro Style -->
       <div class="filter-card">
         <div class="toggle-group">
           <label class="toggle-label">
@@ -104,7 +102,6 @@
         </div>
       </div>
 
-      <!-- AI Input -->
       <div class="filter-card">
         <label class="input-label">AI Customization</label>
         <div class="ai-input-wrapper">
@@ -118,7 +115,6 @@
         </div>
       </div>
 
-      <!-- Gender -->
       <div class="filter-card">
         <label class="radio-label">Gender</label>
         <div class="radio-group">
