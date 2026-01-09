@@ -1,25 +1,36 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
 import { GAMES, Language, LANGUAGES } from './games.constants';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
+export class App implements OnInit {
   private router = inject(Router);
-  protected readonly title = signal('nickspin.app');
   protected readonly games = GAMES;
   protected readonly languages = LANGUAGES;
-
+  
+  protected iconRegistry: MatIconRegistry = inject(MatIconRegistry);
+  protected sanitizer: DomSanitizer = inject(DomSanitizer);
+  
   protected readonly currentUrl = signal(this.router.url);
 
-  constructor() {
+  ngOnInit(): void {
+    this.games.forEach(game => {
+      this.iconRegistry.addSvgIcon(
+        game.id,
+        this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/${game.id}.svg`)
+      );
+    });
+
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {

@@ -1,6 +1,5 @@
 export interface Game {
   name: string;
-  logo: string;
   id: string;
   defaultSettings: null;
   bgColor: string;
@@ -15,7 +14,6 @@ export interface Language {
 export const GAMES: Game[] = [
   {
     name: 'Counter-Strike 2',
-    logo: '🔫',
     id: 'cs2',
     defaultSettings: null,
     bgColor: '#6B4423',
@@ -23,7 +21,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'Dota 2',
-    logo: '⚔️',
     id: 'dota2',
     defaultSettings: null,
     bgColor: '#6B1A1A',
@@ -31,7 +28,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'VALORANT',
-    logo: '🎯',
     id: 'valorant',
     defaultSettings: null,
     bgColor: '#6B1A4A',
@@ -39,7 +35,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'League of Legends',
-    logo: '🏆',
     id: 'lol',
     defaultSettings: null,
     bgColor: '#1A4A6B',
@@ -47,7 +42,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'Fortnite',
-    logo: '💣',
     id: 'fortnite',
     defaultSettings: null,
     bgColor: '#6B1A4A',
@@ -55,7 +49,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'Minecraft',
-    logo: '⛏️',
     id: 'minecraft',
     defaultSettings: null,
     bgColor: '#1A4A2E',
@@ -63,7 +56,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'PUBG',
-    logo: '🎯',
     id: 'pubg',
     defaultSettings: null,
     bgColor: '#6B3A1A',
@@ -71,7 +63,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'GTA V',
-    logo: '🚗',
     id: 'gta5',
     defaultSettings: null,
     bgColor: '#6B3A1A',
@@ -79,7 +70,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'Rainbow Six Siege',
-    logo: '🔍',
     id: 'r6',
     defaultSettings: null,
     bgColor: '#1A4A6B',
@@ -87,7 +77,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'World of Warcraft',
-    logo: '🐉',
     id: 'wow',
     defaultSettings: null,
     bgColor: '#6B4A3A',
@@ -95,7 +84,6 @@ export const GAMES: Game[] = [
   },
   {
     name: 'Cyberpunk 2077',
-    logo: '🔮',
     id: 'cyberpunk',
     defaultSettings: null,
     bgColor: '#6B1A4A',
@@ -103,23 +91,13 @@ export const GAMES: Game[] = [
   },
   {
     name: 'Team Fortress 2',
-    logo: '🎩',
     id: 'tf2',
     defaultSettings: null,
     bgColor: '#6B3A1A',
     color: '#C5743B',
   },
   {
-    name: 'Palworld',
-    logo: '🐾',
-    id: 'palworld',
-    defaultSettings: null,
-    bgColor: '#1A4A3A',
-    color: '#3BC57A',
-  },
-  {
     name: 'Roblox',
-    logo: '🎮',
     id: 'roblox',
     defaultSettings: null,
     bgColor: '#6B1A1A',
@@ -127,8 +105,7 @@ export const GAMES: Game[] = [
   },
   {
     name: 'Among Us',
-    logo: '👨‍🚀',
-    id: 'amongus',
+    id: 'among-us',
     defaultSettings: null,
     bgColor: '#6B1A4A',
     color: '#C53B94',

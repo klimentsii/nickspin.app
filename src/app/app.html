@@ -15,7 +15,9 @@
             [style.--game-color]="getGameColor(game.id)"
             class="menu-link"
           >
-            <span class="game-logo">{{ game.logo }}</span>
+              <span class="game-logo">
+                <mat-icon [svgIcon]="game.id"></mat-icon>
+              </span>
             <span class="game-name">{{ game.name }}</span>
           </a>
         </li>
@@ -26,7 +28,7 @@
 
   <main class="main-content">
     <div class="content-container">
-      <h1 class="app-title">NickSpin</h1>
+      <h1 class="app-title">NickSpin - AI nickname generator</h1>
       <button class="spin-button">Spin</button>
     </div>
   </main>
