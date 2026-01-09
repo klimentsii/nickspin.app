@@ -16,6 +16,29 @@ body {
   color: $text-primary;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
+  position: relative;
+}
+
+.background-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background-attachment: fixed;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.background-layer-1 {
+  z-index: -2;
+}
+
+.background-layer-2 {
+  z-index: -1;
 }
 
 .app-container {

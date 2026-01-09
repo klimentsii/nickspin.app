@@ -22,15 +22,58 @@ export class App implements OnInit {
   protected sanitizer: DomSanitizer = inject(DomSanitizer);
   
   protected readonly currentUrl = signal(this.router.url);
+  private currentLayer = 1;
 
   constructor() {
+    if (typeof document !== 'undefined') {
+      const initialColor = this.currentGameColor();
+      const initialDarkerColor = this.darkenColor(initialColor, 0.5);
+      const initialGradient = `linear-gradient(to bottom right, ${initialColor}, ${initialDarkerColor})`;
+      document.body.style.background = initialGradient;
+      document.body.style.backgroundAttachment = 'fixed';
+      document.body.style.backgroundSize = 'cover';
+      
+      const layer1 = document.querySelector('.background-layer-1') as HTMLElement;
+      const layer2 = document.querySelector('.background-layer-2') as HTMLElement;
+      if (layer1) {
+        layer1.style.background = initialGradient;
+        layer1.style.opacity = '1';
+      }
+      if (layer2) {
+        layer2.style.opacity = '0';
+      }
+    }
+
     effect(() => {
       const color = this.currentGameColor();
       if (typeof document !== 'undefined') {
         const darkerColor = this.darkenColor(color, 0.5);
-        document.body.style.background = `linear-gradient(to bottom right, ${color}, ${darkerColor})`;
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.backgroundSize = 'cover';
+        const newGradient = `linear-gradient(to bottom right, ${color}, ${darkerColor})`;
+        
+        const activeLayer = this.currentLayer === 1 ? 2 : 1;
+        const inactiveLayer = this.currentLayer;
+        
+        const activeLayerEl = document.querySelector(`.background-layer-${activeLayer}`) as HTMLElement;
+        const inactiveLayerEl = document.querySelector(`.background-layer-${inactiveLayer}`) as HTMLElement;
+        
+        if (activeLayerEl && inactiveLayerEl) {
+          activeLayerEl.style.background = newGradient;
+          activeLayerEl.style.opacity = '0';
+          activeLayerEl.style.transition = 'none';
+          
+          requestAnimationFrame(() => {
+            activeLayerEl.style.transition = 'opacity 0.5s ease-in-out';
+            inactiveLayerEl.style.transition = 'opacity 0.5s ease-in-out';
+            activeLayerEl.style.opacity = '1';
+            inactiveLayerEl.style.opacity = '0';
+          });
+          
+          setTimeout(() => {
+            document.body.style.background = newGradient;
+          }, 500);
+          
+          this.currentLayer = activeLayer;
+        }
       }
     });
   }
