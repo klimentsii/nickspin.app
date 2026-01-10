@@ -1,13 +1,22 @@
 <div class="background-layer background-layer-1"></div>
 <div class="background-layer background-layer-2"></div>
 <div class="app-container">
-  <aside class="sidebar">
+  <aside class="sidebar" [class.pinned]="sidebarPinned">
     <nav class="menu">
       <h2 class="menu-title">
         <span class="menu-title-icon">
           <mat-icon svgIcon="game"></mat-icon>
         </span>
         <span class="menu-title-text">Games</span>
+        <button 
+          class="pin-button"
+          (click)="toggleSidebarPin(); $event.stopPropagation()"
+          [class.pinned]="sidebarPinned"
+          [style.--game-color]="currentGameAccentColor()"
+          [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+        >
+          <mat-icon>{{ sidebarPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+        </button>
       </h2>
       <ul class="menu-list">
         @for (game of games; track game.id) {
@@ -48,123 +57,187 @@
     </div>
   </main>
 
-  <aside class="settings-panel">
+  <aside 
+    class="settings-panel" 
+    [class.pinned]="settingsPanelPinned"
+    [style.--game-color]="currentGameAccentColor()"
+    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+  >
     <div class="panel-header">
-      <h3 class="panel-title">Filters</h3>
+      <h3 class="panel-title">
+        <span class="panel-title-icon">
+          <mat-icon>tune</mat-icon>
+        </span>
+        <span class="panel-title-text">Filters</span>
+        <button 
+          class="pin-button"
+          (click)="toggleSettingsPanelPin(); $event.stopPropagation()"
+          [class.pinned]="settingsPanelPinned"
+          [style.--game-color]="currentGameAccentColor()"
+          [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+        >
+          <mat-icon>{{ settingsPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+        </button>
+      </h3>
       <div class="panel-subtitle">Customize nickname generation</div>
     </div>
 
     <div class="filters-container">
-      <div class="filter-card">
-        <div class="filter-header">
-          <span class="filter-name">Length</span>
-          <span class="filter-value">{{ nameLength }}</span>
+      <div class="filter-item">
+        <div class="filter-icon-wrapper">
+          <mat-icon class="filter-icon">straighten</mat-icon>
         </div>
-        <input type="range" class="range-slider" min="4" max="32" [(ngModel)]="nameLength" />
-        <div class="range-labels">
-          <span>4</span>
-          <span>32</span>
-        </div>
-      </div>
-
-      <div class="filter-card">
-        <div class="toggle-group">
-          <label class="toggle-label">
-            <span class="toggle-name">Include Numbers</span>
-            <div
-              class="toggle-switch"
-              [class.active]="includeNumbers"
-              (click)="includeNumbers = !includeNumbers"
-            >
-              <div class="toggle-knob"></div>
+        <div class="filter-card">
+          <div class="filter-content">
+            <div class="filter-header">
+              <span class="filter-name">Length</span>
+              <span class="filter-value">{{ nameLength }}</span>
             </div>
-          </label>
-        </div>
-      </div>
-
-      <div class="filter-card">
-        <label class="dropdown-label">Language</label>
-        <div class="custom-dropdown" (click)="dropdownOpen = !dropdownOpen">
-          <span class="dropdown-selected">{{ getLanguageName(selectedLanguage) }}</span>
-          <svg
-            class="dropdown-arrow"
-            :class="{ open: dropdownOpen }"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-          >
-            <path fill="currentColor" d="M4 6l4 4 4-4z" />
-          </svg>
-          <div class="dropdown-menu" *ngIf="dropdownOpen">
-            <div
-              class="dropdown-item"
-              *ngFor="let lang of languages"
-              (click)="selectLanguage(lang)"
-            >
-              {{ lang.name }}
+            <input type="range" class="range-slider" min="4" max="32" [(ngModel)]="nameLength" />
+            <div class="range-labels">
+              <span>4</span>
+              <span>32</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="filter-card">
-        <div class="toggle-group">
-          <label class="toggle-label">
-            <span class="toggle-name">Pro Style</span>
-            <div
-              class="toggle-switch"
-              [class.active]="proPlayerStyle"
-              (click)="proPlayerStyle = !proPlayerStyle"
-            >
-              <div class="toggle-knob"></div>
+      <div class="filter-item">
+        <div class="filter-icon-wrapper">
+          <mat-icon class="filter-icon">numbers</mat-icon>
+        </div>
+        <div class="filter-card">
+          <div class="filter-content">
+            <div class="toggle-group">
+              <label class="toggle-label">
+                <span class="toggle-name">Numbers</span>
+                <div
+                  class="toggle-switch"
+                  [class.active]="numbers"
+                  (click)="numbers = !numbers"
+                >
+                  <div class="toggle-knob"></div>
+                </div>
+              </label>
             </div>
-          </label>
+          </div>
         </div>
       </div>
 
-      <div class="filter-card">
-        <label class="input-label">AI Customization</label>
-        <div class="ai-input-wrapper">
-          <textarea
-            class="ai-textarea"
-            placeholder="Describe your perfect nickname..."
-            [(ngModel)]="aiWishes"
-            maxlength="112"
-          ></textarea>
-          <div class="ai-hint">{{ aiWishes.length }}/112</div>
+      <div class="filter-item">
+        <div class="filter-icon-wrapper">
+          <mat-icon class="filter-icon">language</mat-icon>
+        </div>
+        <div class="filter-card">
+          <div class="filter-content">
+            <label class="dropdown-label">Language</label>
+            <div class="custom-dropdown" (click)="dropdownOpen = !dropdownOpen">
+              <span class="dropdown-selected">{{ getLanguageName(selectedLanguage) }}</span>
+              <svg
+                class="dropdown-arrow"
+                :class="{ open: dropdownOpen }"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+              >
+                <path fill="currentColor" d="M4 6l4 4 4-4z" />
+              </svg>
+              @if (dropdownOpen) {
+                <div class="dropdown-menu">
+                  @for (lang of languages; track lang.code) {
+                    <div
+                      class="dropdown-item"
+                      (click)="selectLanguage(lang)"
+                    >
+                      {{ lang.name }}
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="filter-card">
-        <label class="radio-label">Gender</label>
-        <div class="radio-group">
-          <label class="radio-option" [class.active]="selectedGender === 'male'">
-            <input
-              type="radio"
-              name="gender"
-              [value]="'male'"
-              [(ngModel)]="selectedGender"
-              hidden
-            />
-            <div class="radio-circle"></div>
-            <span>Male</span>
-          </label>
-          <label class="radio-option" [class.active]="selectedGender === 'female'">
-            <input
-              type="radio"
-              name="gender"
-              [value]="'female'"
-              [(ngModel)]="selectedGender"
-              hidden
-            />
-            <div class="radio-circle"></div>
-            <span>Female</span>
-          </label>
-          <label class="radio-option" [class.active]="selectedGender === 'any'">
-            <input type="radio" name="gender" [value]="'any'" [(ngModel)]="selectedGender" hidden />
-            <div class="radio-circle"></div>
-            <span>Any</span>
-          </label>
+      <div class="filter-item">
+        <div class="filter-icon-wrapper">
+          <mat-icon class="filter-icon">workspace_premium</mat-icon>
+        </div>
+        <div class="filter-card">
+          <div class="filter-content">
+            <div class="toggle-group">
+              <label class="toggle-label">
+                <span class="toggle-name">Pro Style</span>
+                <div
+                  class="toggle-switch"
+                  [class.active]="proPlayerStyle"
+                  (click)="proPlayerStyle = !proPlayerStyle"
+                >
+                  <div class="toggle-knob"></div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <div class="filter-icon-wrapper">
+          <mat-icon class="filter-icon">auto_awesome</mat-icon>
+        </div>
+        <div class="filter-card">
+          <div class="filter-content">
+            <label class="input-label">AI Customization</label>
+            <div class="ai-input-wrapper">
+              <textarea
+                class="ai-textarea"
+                placeholder="Describe your perfect nickname..."
+                [(ngModel)]="aiWishes"
+                maxlength="112"
+              ></textarea>
+              <div class="ai-hint">{{ aiWishes.length }}/112</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-item">
+        <div class="filter-icon-wrapper">
+          <mat-icon class="filter-icon">people</mat-icon>
+        </div>
+        <div class="filter-card">
+          <div class="filter-content">
+            <label class="radio-label">Gender</label>
+            <div class="radio-group">
+              <label class="radio-option" [class.active]="selectedGender === 'male'">
+                <input
+                  type="radio"
+                  name="gender"
+                  [value]="'male'"
+                  [(ngModel)]="selectedGender"
+                  hidden
+                />
+                <div class="radio-circle"></div>
+                <span>Male</span>
+              </label>
+              <label class="radio-option" [class.active]="selectedGender === 'female'">
+                <input
+                  type="radio"
+                  name="gender"
+                  [value]="'female'"
+                  [(ngModel)]="selectedGender"
+                  hidden
+                />
+                <div class="radio-circle"></div>
+                <span>Female</span>
+              </label>
+              <label class="radio-option" [class.active]="selectedGender === 'any'">
+                <input type="radio" name="gender" [value]="'any'" [(ngModel)]="selectedGender" hidden />
+                <div class="radio-circle"></div>
+                <span>Any</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>

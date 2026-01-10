@@ -4,13 +4,12 @@ import { GAMES, Language, LANGUAGES } from './games.constants';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer } from '@angular/platform-browser';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -84,6 +83,8 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadPinnedState();
+
     this.games.forEach(game => {
       this.iconRegistry.addSvgIcon(
         game.id,
@@ -100,13 +101,19 @@ export class App implements OnInit {
 
   protected nameLength: number = 8;
 
-  protected includeNumbers: boolean = false;
+  protected numbers: boolean = false;
   protected proPlayerStyle: boolean = false;
   protected dropdownOpen: boolean = false;
 
   protected aiWishes: string = '';
   protected selectedLanguage: string = 'en';
   protected selectedGender: string = 'any';
+
+  protected sidebarPinned: boolean = false;
+  protected settingsPanelPinned: boolean = false;
+
+  private readonly SIDEBAR_PIN_KEY = 'nickspin_sidebar_pinned';
+  private readonly SETTINGS_PANEL_PIN_KEY = 'nickspin_settings_panel_pinned';
 
   protected readonly currentGameId = computed(() => {
     const url = this.currentUrl().replace(/^\//, '');
@@ -158,6 +165,38 @@ export class App implements OnInit {
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
     return `${r}, ${g}, ${b}`;
+  }
+
+  protected toggleSidebarPin(): void {
+    this.sidebarPinned = !this.sidebarPinned;
+    this.savePinnedState();
+  }
+
+  protected toggleSettingsPanelPin(): void {
+    this.settingsPanelPinned = !this.settingsPanelPinned;
+    this.savePinnedState();
+  }
+
+  private loadPinnedState(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const sidebarPinned = localStorage.getItem(this.SIDEBAR_PIN_KEY);
+      const settingsPanelPinned = localStorage.getItem(this.SETTINGS_PANEL_PIN_KEY);
+
+      if (sidebarPinned !== null) {
+        this.sidebarPinned = sidebarPinned === 'true';
+      }
+      
+      if (settingsPanelPinned !== null) {
+        this.settingsPanelPinned = settingsPanelPinned === 'true';
+      }
+    }
+  }
+
+  private savePinnedState(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem(this.SIDEBAR_PIN_KEY, String(this.sidebarPinned));
+      localStorage.setItem(this.SETTINGS_PANEL_PIN_KEY, String(this.settingsPanelPinned));
+    }
   }
 
   private darkenColor(color: string, amount: number): string {
