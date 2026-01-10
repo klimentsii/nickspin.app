@@ -591,20 +591,22 @@ body {
   transition: all 0.2s ease;
   flex: 1;
   position: relative;
+  overflow: visible;
+
+  &:hover {
+    border-color: rgba(var(--game-color-rgb, 99, 102, 241), 0.2);
+  }
+}
+
+.filter-content {
   opacity: 0;
-  max-width: 0;
-  overflow: hidden;
-  transition: opacity 0.3s ease, max-width 0.3s ease, padding 0.3s ease;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+  overflow: visible;
 
   .settings-panel:hover &,
   .settings-panel.pinned & {
     opacity: 1;
-    max-width: 1000px;
-    overflow: visible;
-  }
-
-  &:hover {
-    border-color: rgba(var(--game-color-rgb, 99, 102, 241), 0.2);
   }
 }
 
