@@ -163,7 +163,7 @@
               <span class="dropdown-selected">{{ getLanguageName(selectedLanguage) }}</span>
               <svg
                 class="dropdown-arrow"
-                :class="{ open: dropdownOpen }"
+                [class.open]="dropdownOpen"
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"

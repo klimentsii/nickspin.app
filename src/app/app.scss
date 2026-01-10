@@ -600,6 +600,7 @@ body {
   .settings-panel.pinned & {
     opacity: 1;
     max-width: 1000px;
+    overflow: visible;
   }
 
   &:hover {
@@ -808,6 +809,7 @@ body {
   justify-content: space-between;
   align-items: center;
   transition: all 0.2s ease;
+  z-index: 1;
 
   &:hover {
     border-color: rgba(var(--game-color-rgb, 99, 102, 241), 0.3);
@@ -836,8 +838,10 @@ body {
   border: 1px solid $border-color;
   border-radius: 8px;
   padding: 0.5rem;
-  z-index: 10;
+  z-index: 1000;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  background: $bg-secondary;
+  backdrop-filter: blur(10px);
 }
 
 .dropdown-item {
