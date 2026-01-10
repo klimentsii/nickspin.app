@@ -81,6 +81,10 @@ body {
   height: calc(100vh - 2rem);
   display: flex;
   flex-direction: column;
+  box-shadow: 
+    0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 0, 0, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
 }
 
 .menu {
@@ -369,10 +373,35 @@ body {
 
 .app-subtitle {
   color: $text-secondary;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 400;
   margin: 0;
   text-align: center;
+}
+
+.ai-text {
+  color: var(--game-color, $accent);
+  font-weight: 600;
+  text-shadow: 
+    0 0 10px rgba(var(--game-color-rgb, 99, 102, 241), 0.5),
+    0 0 20px rgba(var(--game-color-rgb, 99, 102, 241), 0.3),
+    0 0 30px rgba(var(--game-color-rgb, 99, 102, 241), 0.2);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 
+      0 0 10px rgba(var(--game-color-rgb, 99, 102, 241), 0.5),
+      0 0 20px rgba(var(--game-color-rgb, 99, 102, 241), 0.3),
+      0 0 30px rgba(var(--game-color-rgb, 99, 102, 241), 0.2);
+  }
+  to {
+    text-shadow: 
+      0 0 15px rgba(var(--game-color-rgb, 99, 102, 241), 0.7),
+      0 0 25px rgba(var(--game-color-rgb, 99, 102, 241), 0.5),
+      0 0 35px rgba(var(--game-color-rgb, 99, 102, 241), 0.3);
+  }
 }
 
 .app-title {
@@ -427,6 +456,10 @@ body {
   border-radius: 25px;
   overflow: hidden;
   transition: all 0.3s ease;
+  box-shadow: 
+    0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 0, 0, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
 
   &:hover,
   &.pinned {

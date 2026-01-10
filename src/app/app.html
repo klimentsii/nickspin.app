@@ -44,7 +44,13 @@
     <div class="content-container">
       <div class="logo-container">
         <img src="/assets/images/nickspin-logo.png" alt="NickSpin" class="app-logo"/>
-        <p class="app-subtitle">AI nickname generator</p>
+        <p class="app-subtitle">
+          <span 
+            class="ai-text"
+            [style.--game-color]="currentGameAccentColor()"
+            [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+          >AI</span> nickname generator
+        </p>
       </div>
       <button 
         class="spin-button"
