@@ -99,7 +99,17 @@ export class App implements OnInit {
       });
   }
 
-  protected nameLength: number = 8;
+  protected minLength: number = 4;
+  protected maxLength: number = 16;
+  protected isDraggingMin: boolean = false;
+  protected isDraggingMax: boolean = false;
+  
+  private boundOnDragMinMouse?: (event: MouseEvent) => void;
+  private boundOnDragMinTouch?: (event: TouchEvent) => void;
+  private boundOnDragMaxMouse?: (event: MouseEvent) => void;
+  private boundOnDragMaxTouch?: (event: TouchEvent) => void;
+  private boundStopDragMin?: () => void;
+  private boundStopDragMax?: () => void;
 
   protected numbers: boolean = false;
   protected proPlayerStyle: boolean = false;
@@ -216,5 +226,123 @@ export class App implements OnInit {
     };
     
     return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
+  }
+
+  protected startDragMin(event: MouseEvent | TouchEvent): void {
+    this.isDraggingMin = true;
+    event.preventDefault();
+    if (typeof document !== 'undefined') {
+      this.boundOnDragMinMouse = (e: MouseEvent) => {
+        if (this.isDraggingMin) {
+          this.updateMinValue(e.clientX);
+        }
+      };
+      this.boundOnDragMinTouch = (e: TouchEvent) => {
+        if (this.isDraggingMin && e.touches.length > 0) {
+          this.updateMinValue(e.touches[0].clientX);
+        }
+      };
+      this.boundStopDragMin = () => this.stopDragMin();
+      document.addEventListener('mousemove', this.boundOnDragMinMouse);
+      document.addEventListener('mouseup', this.boundStopDragMin);
+      document.addEventListener('touchmove', this.boundOnDragMinTouch);
+      document.addEventListener('touchend', this.boundStopDragMin);
+    }
+  }
+
+  protected startDragMax(event: MouseEvent | TouchEvent): void {
+    this.isDraggingMax = true;
+    event.preventDefault();
+    if (typeof document !== 'undefined') {
+      this.boundOnDragMaxMouse = (e: MouseEvent) => {
+        if (this.isDraggingMax) {
+          this.updateMaxValue(e.clientX);
+        }
+      };
+      this.boundOnDragMaxTouch = (e: TouchEvent) => {
+        if (this.isDraggingMax && e.touches.length > 0) {
+          this.updateMaxValue(e.touches[0].clientX);
+        }
+      };
+      this.boundStopDragMax = () => this.stopDragMax();
+      document.addEventListener('mousemove', this.boundOnDragMaxMouse);
+      document.addEventListener('mouseup', this.boundStopDragMax);
+      document.addEventListener('touchmove', this.boundOnDragMaxTouch);
+      document.addEventListener('touchend', this.boundStopDragMax);
+    }
+  }
+
+  private stopDragMin(): void {
+    this.isDraggingMin = false;
+    if (typeof document !== 'undefined') {
+      if (this.boundOnDragMinMouse) {
+        document.removeEventListener('mousemove', this.boundOnDragMinMouse);
+      }
+      if (this.boundOnDragMinTouch) {
+        document.removeEventListener('touchmove', this.boundOnDragMinTouch);
+      }
+      if (this.boundStopDragMin) {
+        document.removeEventListener('mouseup', this.boundStopDragMin);
+        document.removeEventListener('touchend', this.boundStopDragMin);
+      }
+    }
+  }
+
+  private stopDragMax(): void {
+    this.isDraggingMax = false;
+    if (typeof document !== 'undefined') {
+      if (this.boundOnDragMaxMouse) {
+        document.removeEventListener('mousemove', this.boundOnDragMaxMouse);
+      }
+      if (this.boundOnDragMaxTouch) {
+        document.removeEventListener('touchmove', this.boundOnDragMaxTouch);
+      }
+      if (this.boundStopDragMax) {
+        document.removeEventListener('mouseup', this.boundStopDragMax);
+        document.removeEventListener('touchend', this.boundStopDragMax);
+      }
+    }
+  }
+
+  private updateMinValue(clientX: number): void {
+    const slider = document.querySelector('.dual-range-slider') as HTMLElement;
+    if (!slider) return;
+    
+    const rect = slider.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const min = 4;
+    const max = 32;
+    const newValue = Math.round(min + percent * (max - min));
+    
+    if (newValue <= this.maxLength) {
+      this.minLength = Math.max(4, Math.min(32, newValue));
+    }
+  }
+
+  private updateMaxValue(clientX: number): void {
+    const slider = document.querySelector('.dual-range-slider') as HTMLElement;
+    if (!slider) return;
+    
+    const rect = slider.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const min = 4;
+    const max = 32;
+    const newValue = Math.round(min + percent * (max - min));
+    
+    if (newValue >= this.minLength) {
+      this.maxLength = Math.max(4, Math.min(32, newValue));
+    }
+  }
+
+  protected getMinPercent(): number {
+    return ((this.minLength - 4) / (32 - 4)) * 100;
+  }
+
+  protected getMaxPercent(): number {
+    return ((this.maxLength - 4) / (32 - 4)) * 100;
+  }
+
+  protected getRangeWidth(): number {
+    return this.getMaxPercent() - this.getMinPercent();
   }
 }
