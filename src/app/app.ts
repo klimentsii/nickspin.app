@@ -25,7 +25,11 @@ export class App implements OnInit {
   protected readonly currentUrl = signal(this.router.url);
   private currentLayer = 1;
 
-  constructor() {
+  constructor() {this.iconRegistry.addSvgIcon(
+      'game',
+      this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/game.svg`)
+    );
+
     if (typeof document !== 'undefined') {
       const initialColor = this.currentGameColor();
       const initialDarkerColor = this.darkenColor(initialColor, 0.5);
@@ -81,10 +85,6 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     this.games.forEach(game => {
-      this.iconRegistry.addSvgIcon(
-        'game',
-        this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/game.svg`)
-      );
       this.iconRegistry.addSvgIcon(
         game.id,
         this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/${game.id}.svg`)
