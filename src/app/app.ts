@@ -20,6 +20,7 @@ export class App implements OnInit {
 
   protected iconRegistry: MatIconRegistry = inject(MatIconRegistry);
   protected sanitizer: DomSanitizer = inject(DomSanitizer);
+  private http: HttpClient = inject(HttpClient);
 
   protected readonly currentUrl = signal(this.router.url);
   private currentLayer = 1;
@@ -29,7 +30,7 @@ export class App implements OnInit {
   loading: boolean = false;
   usedNicknames = new Set<string>();
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.iconRegistry.addSvgIcon(
       'game',
       this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/game.svg`)
@@ -91,7 +92,15 @@ export class App implements OnInit {
     });
   }
   generateNickname() {
-    this.http.post<any>('https://nickspin.miatselski-artur.workers.dev', {}).subscribe({
+    this.isLoading = true;
+    console.log(this.currentGame().name);
+
+    const body = {
+      game: this.currentGame().name,
+      style: 'chaotic',
+      mood: 'funny',
+    };
+    this.http.post<any>('https://nickspin.miatselski-artur.workers.dev', body, {}).subscribe({
       next: (res) => {
         let nick = res.nickname;
         console.log(res);
@@ -99,9 +108,9 @@ export class App implements OnInit {
         if (this.usedNicknames.has(nick)) {
           nick += Math.floor(Math.random() * 100);
         }
-
         this.usedNicknames.add(nick);
         this.nickname = nick;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error(err);

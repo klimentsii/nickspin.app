@@ -52,8 +52,9 @@
         [style.--game-color]="currentGameAccentColor()"
         [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
         (click)="generateNickname()"
+        [disabled]="isLoading"
       >
-        Spin <mat-icon>sync</mat-icon>
+        {{ !isLoading ? 'Spin' : 'Generating..' }} <mat-icon>sync</mat-icon>
       </button>
       <!-- Результат под кнопкой: -->
       <div *ngIf="generatedNickname">
