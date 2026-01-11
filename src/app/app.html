@@ -8,7 +8,7 @@
           <mat-icon svgIcon="game"></mat-icon>
         </span>
         <span class="menu-title-text">Games</span>
-        <button 
+        <button
           class="pin-button"
           (click)="toggleSidebarPin(); $event.stopPropagation()"
           [class.pinned]="sidebarPinned"
@@ -29,9 +29,9 @@
             [style.--game-color-rgb]="getGameColorRgb(game.id)"
             class="menu-link"
           >
-              <span class="game-logo">
-                <mat-icon [svgIcon]="game.id"></mat-icon>
-              </span>
+            <span class="game-logo">
+              <mat-icon [svgIcon]="game.id"></mat-icon>
+            </span>
             <span class="game-name">{{ game.name }}</span>
           </a>
         </li>
@@ -43,22 +43,27 @@
   <main class="main-content">
     <div class="content-container">
       <div class="logo-container">
-        <img src="/assets/images/nickspin-logo.png" alt="NickSpin" class="app-logo"/>
+        <img src="/assets/images/nickspin-logo.png" alt="NickSpin" class="app-logo" />
         <p class="app-subtitle">AI nickname generator</p>
       </div>
-      <button 
+      <button
         class="spin-button"
         [style.background-color]="currentGameAccentColor()"
         [style.--game-color]="currentGameAccentColor()"
         [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+        (click)="generateNickname()"
       >
-      Spin <mat-icon>sync</mat-icon>
-     </button>
+        Spin <mat-icon>sync</mat-icon>
+      </button>
+      <!-- Результат под кнопкой: -->
+      <div *ngIf="generatedNickname">
+        <p>{{ nickname }}</p>
+      </div>
     </div>
   </main>
 
-  <aside 
-    class="settings-panel" 
+  <aside
+    class="settings-panel"
     [class.pinned]="settingsPanelPinned"
     [style.--game-color]="currentGameAccentColor()"
     [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
@@ -69,7 +74,7 @@
           <mat-icon>tune</mat-icon>
         </span>
         <span class="panel-title-text">Filters</span>
-        <button 
+        <button
           class="pin-button"
           (click)="toggleSettingsPanelPin(); $event.stopPropagation()"
           [class.pinned]="settingsPanelPinned"
@@ -111,11 +116,7 @@
             <div class="toggle-group">
               <label class="toggle-label">
                 <span class="toggle-name">Numbers</span>
-                <div
-                  class="toggle-switch"
-                  [class.active]="numbers"
-                  (click)="numbers = !numbers"
-                >
+                <div class="toggle-switch" [class.active]="numbers" (click)="numbers = !numbers">
                   <div class="toggle-knob"></div>
                 </div>
               </label>
@@ -143,16 +144,13 @@
                 <path fill="currentColor" d="M4 6l4 4 4-4z" />
               </svg>
               @if (dropdownOpen) {
-                <div class="dropdown-menu">
-                  @for (lang of languages; track lang.code) {
-                    <div
-                      class="dropdown-item"
-                      (click)="selectLanguage(lang)"
-                    >
-                      {{ lang.name }}
-                    </div>
-                  }
+              <div class="dropdown-menu">
+                @for (lang of languages; track lang.code) {
+                <div class="dropdown-item" (click)="selectLanguage(lang)">
+                  {{ lang.name }}
                 </div>
+                }
+              </div>
               }
             </div>
           </div>
@@ -232,7 +230,13 @@
                 <span>Female</span>
               </label>
               <label class="radio-option" [class.active]="selectedGender === 'any'">
-                <input type="radio" name="gender" [value]="'any'" [(ngModel)]="selectedGender" hidden />
+                <input
+                  type="radio"
+                  name="gender"
+                  [value]="'any'"
+                  [(ngModel)]="selectedGender"
+                  hidden
+                />
                 <div class="radio-circle"></div>
                 <span>Any</span>
               </label>

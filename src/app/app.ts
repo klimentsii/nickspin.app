@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { filter } from 'rxjs';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-root',
   imports: [CommonModule, FormsModule, MatIconModule],
@@ -17,14 +17,20 @@ export class App implements OnInit {
   private router = inject(Router);
   protected readonly games = GAMES;
   protected readonly languages = LANGUAGES;
-  
+
   protected iconRegistry: MatIconRegistry = inject(MatIconRegistry);
   protected sanitizer: DomSanitizer = inject(DomSanitizer);
-  
+
   protected readonly currentUrl = signal(this.router.url);
   private currentLayer = 1;
+  protected generatedNickname: string[] = [];
+  protected isLoading: boolean = false;
+  nickname: string = '';
+  loading: boolean = false;
+  usedNicknames = new Set<string>();
 
-  constructor() {this.iconRegistry.addSvgIcon(
+  constructor(private http: HttpClient) {
+    this.iconRegistry.addSvgIcon(
       'game',
       this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/game.svg`)
     );
@@ -36,7 +42,7 @@ export class App implements OnInit {
       document.body.style.background = initialGradient;
       document.body.style.backgroundAttachment = 'fixed';
       document.body.style.backgroundSize = 'cover';
-      
+
       const layer1 = document.querySelector('.background-layer-1') as HTMLElement;
       const layer2 = document.querySelector('.background-layer-2') as HTMLElement;
       if (layer1) {
@@ -47,45 +53,66 @@ export class App implements OnInit {
         layer2.style.opacity = '0';
       }
     }
-
     effect(() => {
       const color = this.currentGameColor();
       if (typeof document !== 'undefined') {
         const darkerColor = this.darkenColor(color, 0.5);
         const newGradient = `linear-gradient(to bottom right, ${color}, ${darkerColor})`;
-        
+
         const activeLayer = this.currentLayer === 1 ? 2 : 1;
         const inactiveLayer = this.currentLayer;
-        
-        const activeLayerEl = document.querySelector(`.background-layer-${activeLayer}`) as HTMLElement;
-        const inactiveLayerEl = document.querySelector(`.background-layer-${inactiveLayer}`) as HTMLElement;
-        
+
+        const activeLayerEl = document.querySelector(
+          `.background-layer-${activeLayer}`
+        ) as HTMLElement;
+        const inactiveLayerEl = document.querySelector(
+          `.background-layer-${inactiveLayer}`
+        ) as HTMLElement;
+
         if (activeLayerEl && inactiveLayerEl) {
           activeLayerEl.style.background = newGradient;
           activeLayerEl.style.opacity = '0';
           activeLayerEl.style.transition = 'none';
-          
+
           requestAnimationFrame(() => {
             activeLayerEl.style.transition = 'opacity 0.5s ease-in-out';
             inactiveLayerEl.style.transition = 'opacity 0.5s ease-in-out';
             activeLayerEl.style.opacity = '1';
             inactiveLayerEl.style.opacity = '0';
           });
-          
+
           setTimeout(() => {
             document.body.style.background = newGradient;
           }, 500);
-          
+
           this.currentLayer = activeLayer;
         }
       }
+    });
+  }
+  generateNickname() {
+    this.http.post<any>('https://nickspin.miatselski-artur.workers.dev', {}).subscribe({
+      next: (res) => {
+        let nick = res.nickname;
+        console.log(res);
+
+        if (this.usedNicknames.has(nick)) {
+          nick += Math.floor(Math.random() * 100);
+        }
+
+        this.usedNicknames.add(nick);
+        this.nickname = nick;
+      },
+      error: (err) => {
+        console.error(err);
+      },
     });
   }
 
   ngOnInit(): void {
     this.loadPinnedState();
 
-    this.games.forEach(game => {
+    this.games.forEach((game) => {
       this.iconRegistry.addSvgIcon(
         game.id,
         this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/${game.id}.svg`)
@@ -93,7 +120,7 @@ export class App implements OnInit {
     });
 
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.currentUrl.set(event.url);
       });
@@ -117,23 +144,23 @@ export class App implements OnInit {
 
   protected readonly currentGameId = computed(() => {
     const url = this.currentUrl().replace(/^\//, '');
-    const game = GAMES.find(g => g.id === url);
+    const game = GAMES.find((g) => g.id === url);
     return game ? game.id : 'roblox';
   });
 
   protected readonly currentGameColor = computed(() => {
-    const game = GAMES.find(g => g.id === this.currentGameId());
-    return game ? game.bgColor : GAMES.find(g => g.id === 'roblox')?.bgColor || '#6B1A1A';
+    const game = GAMES.find((g) => g.id === this.currentGameId());
+    return game ? game.bgColor : GAMES.find((g) => g.id === 'roblox')?.bgColor || '#6B1A1A';
   });
 
   protected readonly currentGameAccentColor = computed(() => {
-    const game = GAMES.find(g => g.id === this.currentGameId());
-    return game ? game.color : GAMES.find(g => g.id === 'roblox')?.color || '#C53B3B';
+    const game = GAMES.find((g) => g.id === this.currentGameId());
+    return game ? game.color : GAMES.find((g) => g.id === 'roblox')?.color || '#C53B3B';
   });
 
   protected readonly currentGame = computed(() => {
-    const game = GAMES.find(g => g.id === this.currentGameId());
-    return game || GAMES.find(g => g.id === 'roblox') || GAMES[0];
+    const game = GAMES.find((g) => g.id === this.currentGameId());
+    return game || GAMES.find((g) => g.id === 'roblox') || GAMES[0];
   });
 
   protected getLanguageName(code: string): string {
@@ -154,7 +181,7 @@ export class App implements OnInit {
   }
 
   protected getGameColor(gameId: string): string {
-    const game = GAMES.find(g => g.id === gameId);
+    const game = GAMES.find((g) => g.id === gameId);
     return game ? game.color : '#6366f1';
   }
 
@@ -185,7 +212,7 @@ export class App implements OnInit {
       if (sidebarPinned !== null) {
         this.sidebarPinned = sidebarPinned === 'true';
       }
-      
+
       if (settingsPanelPinned !== null) {
         this.settingsPanelPinned = settingsPanelPinned === 'true';
       }
@@ -201,20 +228,20 @@ export class App implements OnInit {
 
   private darkenColor(color: string, amount: number): string {
     const hex = color.replace('#', '');
-    
+
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
-    
+
     const newR = Math.max(0, Math.floor(r * (1 - amount)));
     const newG = Math.max(0, Math.floor(g * (1 - amount)));
     const newB = Math.max(0, Math.floor(b * (1 - amount)));
-    
+
     const toHex = (n: number) => {
       const hex = n.toString(16);
       return hex.length === 1 ? '0' + hex : hex;
     };
-    
+
     return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
   }
 }
