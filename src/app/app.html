@@ -3,23 +3,6 @@
 <div class="app-container">
   <aside class="sidebar" [class.pinned]="sidebarPinned">
     <nav class="menu">
-      <<<<<<< HEAD
-      <h2 class="menu-title">
-        <span class="menu-title-icon">
-          <mat-icon svgIcon="game"></mat-icon>
-        </span>
-        <span class="menu-title-text">Games</span>
-        <button
-          class="pin-button"
-          (click)="toggleSidebarPin(); $event.stopPropagation()"
-          [class.pinned]="sidebarPinned"
-          [style.--game-color]="currentGameAccentColor()"
-          [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-        >
-          <mat-icon>{{ sidebarPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
-        </button>
-      </h2>
-      =======
       <div class="menu-header">
         <h2 class="menu-title">
           <span class="menu-title-icon">
@@ -38,7 +21,6 @@
         </h2>
         <div class="menu-subtitle">Games custom filters</div>
       </div>
-      >>>>>>> 22ce1322f665a31868829dd92800d530c591c4ed
       <ul class="menu-list">
         @for (game of games; track game.id) {
         <li class="menu-item">

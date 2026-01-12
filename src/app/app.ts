@@ -97,6 +97,9 @@ export class App implements OnInit {
 
     const body = {
       game: this.currentGame().name,
+      numbers: this.numbers,
+      language: this.selectedLanguage,
+      proStyle: this.proPlayerStyle,
       style: 'chaotic',
       mood: 'funny',
     };
@@ -156,7 +159,7 @@ export class App implements OnInit {
   protected maxLength: number = 16;
   protected isDraggingMin: boolean = false;
   protected isDraggingMax: boolean = false;
-  
+
   private boundOnDragMinMouse?: (event: MouseEvent) => void;
   private boundOnDragMinTouch?: (event: TouchEvent) => void;
   private boundOnDragMaxMouse?: (event: MouseEvent) => void;
@@ -180,7 +183,7 @@ export class App implements OnInit {
   protected tone: string = 'neutral';
   protected uniqueness: string = 'medium';
   protected allowBanned: boolean = false;
-  
+
   protected languageMenuTop: boolean = false;
   protected specialSymbolsMenuTop: boolean = false;
   protected themeMenuTop: boolean = false;
@@ -233,18 +236,20 @@ export class App implements OnInit {
     this.uniquenessDropdownOpen = false;
   }
 
-  protected toggleDropdown(dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness'): void {
+  protected toggleDropdown(
+    dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness'
+  ): void {
     if (dropdownType !== 'language') this.dropdownOpen = false;
     if (dropdownType !== 'specialSymbols') this.specialSymbolsDropdownOpen = false;
     if (dropdownType !== 'theme') this.themeDropdownOpen = false;
     if (dropdownType !== 'tone') this.toneDropdownOpen = false;
     if (dropdownType !== 'uniqueness') this.uniquenessDropdownOpen = false;
-    
+
     if (typeof document !== 'undefined') {
       const dropdown = document.querySelector(`[data-dropdown="${dropdownType}"]`) as HTMLElement;
       if (dropdown) {
         const shouldShowTop = this.calculateDropdownPosition(dropdown);
-        
+
         switch (dropdownType) {
           case 'language':
             this.languageMenuTop = shouldShowTop;
@@ -264,7 +269,7 @@ export class App implements OnInit {
         }
       }
     }
-    
+
     switch (dropdownType) {
       case 'language':
         this.dropdownOpen = !this.dropdownOpen;
@@ -287,18 +292,19 @@ export class App implements OnInit {
   private calculateDropdownPosition(dropdown: HTMLElement): boolean {
     const rect = dropdown.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
-    
+
     const estimatedMenuHeight = 250;
     const padding = 20;
-    
+
     const spaceBelow = viewportHeight - rect.bottom;
     const spaceAbove = rect.top;
-    
+
     return spaceBelow < estimatedMenuHeight + padding && spaceAbove > spaceBelow;
   }
 
-
-  private checkDropdownPosition(dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness'): void {
+  private checkDropdownPosition(
+    dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness'
+  ): void {
     if (typeof document === 'undefined') return;
 
     const dropdown = document.querySelector(`[data-dropdown="${dropdownType}"]`) as HTMLElement;
@@ -474,13 +480,13 @@ export class App implements OnInit {
   private updateMinValue(clientX: number): void {
     const slider = document.querySelector('.dual-range-slider') as HTMLElement;
     if (!slider) return;
-    
+
     const rect = slider.getBoundingClientRect();
     const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     const min = 4;
     const max = 32;
     const newValue = Math.round(min + percent * (max - min));
-    
+
     if (newValue <= this.maxLength) {
       this.minLength = Math.max(4, Math.min(32, newValue));
     }
@@ -489,13 +495,13 @@ export class App implements OnInit {
   private updateMaxValue(clientX: number): void {
     const slider = document.querySelector('.dual-range-slider') as HTMLElement;
     if (!slider) return;
-    
+
     const rect = slider.getBoundingClientRect();
     const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     const min = 4;
     const max = 32;
     const newValue = Math.round(min + percent * (max - min));
-    
+
     if (newValue >= this.minLength) {
       this.maxLength = Math.max(4, Math.min(32, newValue));
     }
