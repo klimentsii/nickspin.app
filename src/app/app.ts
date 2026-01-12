@@ -24,11 +24,13 @@ export class App implements OnInit {
 
   protected readonly currentUrl = signal(this.router.url);
   private currentLayer = 1;
-  protected generatedNickname: string[] = [];
+  protected generatedNicknames: Array<{ id: string; nickname: string; liked: boolean }> = [];
   protected isLoading: boolean = false;
   nickname: string = '';
   loading: boolean = false;
   usedNicknames = new Set<string>();
+  private nicknameIdCounter = 0;
+  protected showCopyNotification: boolean = false;
 
   constructor() {
     this.iconRegistry.addSvgIcon(
@@ -105,18 +107,49 @@ export class App implements OnInit {
     };
     this.http.post<any>('https://nickspin.miatselski-artur.workers.dev', body, {}).subscribe({
       next: (res) => {
-        let nick = res.nickname;
         console.log(res);
-
-        if (this.usedNicknames.has(nick)) {
-          nick += Math.floor(Math.random() * 100);
+        
+        this.generatedNicknames = [];
+        
+        let nicknames: string[] = [];
+        
+        if (typeof res.nickname === 'string') {
+          try {
+            const parsed = JSON.parse(res.nickname);
+            nicknames = Array.isArray(parsed) ? parsed : [res.nickname];
+          } catch (e) {
+            nicknames = [res.nickname];
+          }
+        } else if (Array.isArray(res.nickname)) {
+          nicknames = res.nickname;
+        } else {
+          nicknames = [res.nickname];
         }
-        this.usedNicknames.add(nick);
-        this.nickname = nick;
+        
+        nicknames.forEach((nick: string) => {
+          let processedNick = nick;
+          
+          if (this.usedNicknames.has(processedNick)) {
+            processedNick += Math.floor(Math.random() * 100);
+          }
+          this.usedNicknames.add(processedNick);
+          
+          this.generatedNicknames.push({ 
+            id: `nickname-${Date.now()}-${++this.nicknameIdCounter}`, 
+            nickname: processedNick, 
+            liked: false 
+          });
+        });
+        
+        if (nicknames.length > 0) {
+          this.nickname = nicknames[0];
+        }
+        
         this.isLoading = false;
       },
       error: (err) => {
         console.error(err);
+        this.isLoading = false;
       },
     });
   }
@@ -517,5 +550,23 @@ export class App implements OnInit {
 
   protected getRangeWidth(): number {
     return this.getMaxPercent() - this.getMinPercent();
+  }
+
+  protected copyNickname(nickname: string): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(nickname).then(() => {
+        this.showCopyNotification = true;
+        setTimeout(() => {
+          this.showCopyNotification = false;
+        }, 2000);
+      });
+    }
+  }
+
+  protected toggleLike(id: string): void {
+    const nicknameItem = this.generatedNicknames.find(item => item.id === id);
+    if (nicknameItem) {
+      nicknameItem.liked = !nicknameItem.liked;
+    }
   }
 }

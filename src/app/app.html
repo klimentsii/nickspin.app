@@ -57,14 +57,55 @@
         (click)="generateNickname()"
         [disabled]="isLoading"
       >
-        {{ !isLoading ? 'Spin' : 'Generating..' }} <mat-icon>sync</mat-icon>
+        {{ !isLoading ? 'Spin' : 'Generating..' }} 
+        <mat-icon [class.spinning]="isLoading">sync</mat-icon>
       </button>
-      <!-- Результат под кнопкой: -->
-      <div *ngIf="generatedNickname">
-        <p>{{ nickname }}</p>
+      @if (isLoading) {
+      <div class="nicknames-container">
+        <div class="loading-spinner" [style.--game-color]="currentGameAccentColor()" [style.--game-color-rgb]="getGameColorRgb(currentGameId())">
+          <mat-icon class="spinning-icon">sync</mat-icon>
+          <span>Generating nicknames...</span>
+        </div>
       </div>
+      } @else if (generatedNicknames.length > 0) {
+      <div class="nicknames-container">
+        @for (nicknameItem of generatedNicknames; track nicknameItem.id) {
+        <div class="nickname-card">
+          <div class="nickname-text">{{ nicknameItem.nickname }}</div>
+          <div class="nickname-actions">
+            <button
+              class="action-button copy-button"
+              (click)="copyNickname(nicknameItem.nickname)"
+              [style.--game-color]="currentGameAccentColor()"
+              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+              title="Copy"
+            >
+              <mat-icon>content_copy</mat-icon>
+            </button>
+            <button
+              class="action-button like-button"
+              [class.liked]="nicknameItem.liked"
+              (click)="toggleLike(nicknameItem.id)"
+              [style.--game-color]="currentGameAccentColor()"
+              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+              title="Favorite"
+            >
+              <mat-icon>{{ nicknameItem.liked ? 'star' : 'star_border' }}</mat-icon>
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+      }
     </div>
   </main>
+
+  @if (showCopyNotification) {
+  <div class="copy-notification" [style.--game-color]="currentGameAccentColor()" [style.--game-color-rgb]="getGameColorRgb(currentGameId())">
+    <mat-icon>check_circle</mat-icon>
+    <span>Copied to clipboard!</span>
+  </div>
+  }
 
   <aside
     class="settings-panel"
