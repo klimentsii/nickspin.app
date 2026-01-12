@@ -24,11 +24,15 @@ export class App implements OnInit {
 
   protected readonly currentUrl = signal(this.router.url);
   private currentLayer = 1;
-  protected generatedNickname: string[] = [];
+  protected generatedNicknames: Array<{ id: string; nickname: string; liked: boolean }> = [];
+  protected favoriteNicknames: Array<{ id: string; nickname: string; liked: boolean }> = [];
   protected isLoading: boolean = false;
   nickname: string = '';
   loading: boolean = false;
   usedNicknames = new Set<string>();
+  private nicknameIdCounter = 0;
+  protected showCopyNotification: boolean = false;
+  private readonly FAVORITES_STORAGE_KEY = 'nickspin_favorites';
 
   constructor() {
     this.iconRegistry.addSvgIcon(
@@ -247,24 +251,59 @@ export class App implements OnInit {
     };
     this.http.post<any>('https://nickspin.miatselski-artur.workers.dev', body, {}).subscribe({
       next: (res) => {
-        let nick = res.nickname;
         console.log(res);
-
-        if (this.usedNicknames.has(nick)) {
-          nick += Math.floor(Math.random() * 100);
+        
+        this.generatedNicknames = [];
+        
+        let nicknames: string[] = [];
+        
+        if (typeof res.nickname === 'string') {
+          try {
+            const parsed = JSON.parse(res.nickname);
+            nicknames = Array.isArray(parsed) ? parsed : [res.nickname];
+          } catch (e) {
+            nicknames = [res.nickname];
+          }
+        } else if (Array.isArray(res.nickname)) {
+          nicknames = res.nickname;
+        } else {
+          nicknames = [res.nickname];
         }
-        this.usedNicknames.add(nick);
-        this.nickname = nick;
+        
+        nicknames.forEach((nick: string) => {
+          let processedNick = nick;
+          
+          if (this.usedNicknames.has(processedNick)) {
+            processedNick += Math.floor(Math.random() * 100);
+          }
+          this.usedNicknames.add(processedNick);
+          
+          const newId = `nickname-${Date.now()}-${++this.nicknameIdCounter}`;
+          const isFavorite = this.favoriteNicknames.some(fav => fav.nickname === processedNick);
+          
+          this.generatedNicknames.push({ 
+            id: newId, 
+            nickname: processedNick, 
+            liked: isFavorite 
+          });
+        });
+        
+        if (nicknames.length > 0) {
+          this.nickname = nicknames[0];
+        }
+        
         this.isLoading = false;
       },
       error: (err) => {
         console.error(err);
+        this.isLoading = false;
       },
     });
   }
 
   ngOnInit(): void {
     this.loadPinnedState();
+    this.loadFavorites();
 
     this.games.forEach((game) => {
       this.iconRegistry.addSvgIcon(
@@ -334,9 +373,11 @@ export class App implements OnInit {
 
   protected sidebarPinned: boolean = false;
   protected settingsPanelPinned: boolean = false;
+  protected favoritesPanelPinned: boolean = false;
 
   private readonly SIDEBAR_PIN_KEY = 'nickspin_sidebar_pinned';
   private readonly SETTINGS_PANEL_PIN_KEY = 'nickspin_settings_panel_pinned';
+  private readonly FAVORITES_PANEL_PIN_KEY = 'nickspin_favorites_panel_pinned';
 
   protected readonly currentGameId = computed(() => {
     const url = this.currentUrl().replace(/^\//, '');
@@ -502,10 +543,16 @@ export class App implements OnInit {
     this.savePinnedState();
   }
 
+  protected toggleFavoritesPanelPin(): void {
+    this.favoritesPanelPinned = !this.favoritesPanelPinned;
+    this.savePinnedState();
+  }
+
   private loadPinnedState(): void {
     if (typeof window !== 'undefined' && window.localStorage) {
       const sidebarPinned = localStorage.getItem(this.SIDEBAR_PIN_KEY);
       const settingsPanelPinned = localStorage.getItem(this.SETTINGS_PANEL_PIN_KEY);
+      const favoritesPanelPinned = localStorage.getItem(this.FAVORITES_PANEL_PIN_KEY);
 
       if (sidebarPinned !== null) {
         this.sidebarPinned = sidebarPinned === 'true';
@@ -514,6 +561,10 @@ export class App implements OnInit {
       if (settingsPanelPinned !== null) {
         this.settingsPanelPinned = settingsPanelPinned === 'true';
       }
+
+      if (favoritesPanelPinned !== null) {
+        this.favoritesPanelPinned = favoritesPanelPinned === 'true';
+      }
     }
   }
 
@@ -521,6 +572,7 @@ export class App implements OnInit {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem(this.SIDEBAR_PIN_KEY, String(this.sidebarPinned));
       localStorage.setItem(this.SETTINGS_PANEL_PIN_KEY, String(this.settingsPanelPinned));
+      localStorage.setItem(this.FAVORITES_PANEL_PIN_KEY, String(this.favoritesPanelPinned));
     }
   }
 
@@ -659,5 +711,72 @@ export class App implements OnInit {
 
   protected getRangeWidth(): number {
     return this.getMaxPercent() - this.getMinPercent();
+  }
+
+  protected copyNickname(nickname: string): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(nickname).then(() => {
+        this.showCopyNotification = true;
+        setTimeout(() => {
+          this.showCopyNotification = false;
+        }, 2000);
+      });
+    }
+  }
+
+  protected toggleLike(id: string): void {
+    const nicknameItem = this.generatedNicknames.find(item => item.id === id);
+    if (nicknameItem) {
+      nicknameItem.liked = !nicknameItem.liked;
+      
+      if (nicknameItem.liked) {
+        const exists = this.favoriteNicknames.some(fav => fav.nickname === nicknameItem.nickname);
+        if (!exists) {
+          const favoriteItem = { ...nicknameItem };
+          this.favoriteNicknames.push(favoriteItem);
+        }
+      } else {
+        this.favoriteNicknames = this.favoriteNicknames.filter(item => item.nickname !== nicknameItem.nickname);
+      }
+      
+      this.saveFavorites();
+    }
+  }
+
+  protected removeFromFavorites(id: string): void {
+    const favoriteItem = this.favoriteNicknames.find(item => item.id === id);
+    if (favoriteItem) {
+      this.favoriteNicknames = this.favoriteNicknames.filter(item => item.id !== id);
+      
+      const nicknameItem = this.generatedNicknames.find(item => item.nickname === favoriteItem.nickname);
+      if (nicknameItem) {
+        nicknameItem.liked = false;
+      }
+      
+      this.saveFavorites();
+    }
+  }
+
+  private loadFavorites(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem(this.FAVORITES_STORAGE_KEY);
+        if (stored) {
+          this.favoriteNicknames = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.error('Error loading favorites:', e);
+      }
+    }
+  }
+
+  private saveFavorites(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(this.FAVORITES_STORAGE_KEY, JSON.stringify(this.favoriteNicknames));
+      } catch (e) {
+        console.error('Error saving favorites:', e);
+      }
+    }
   }
 }
