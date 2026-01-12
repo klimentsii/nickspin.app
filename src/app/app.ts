@@ -92,16 +92,158 @@ export class App implements OnInit {
     });
   }
   generateNickname() {
+    let exampleNickNames: string[] = [];
+
+    switch (this.currentGame().name) {
+      case 'Dota 2':
+        exampleNickNames = ['RAMZES666', 'Mr.ProperAnGeL', 'Lina X', 'klimentsii', 'artlor'];
+        break;
+
+      case 'Counter-Strike 2':
+        exampleNickNames = [
+          's1mple',
+          'Captain VAC Sparrow',
+          'Friendly Fire',
+          'Jean Claude VACban',
+          'RushB_Or_Cry',
+        ];
+        break;
+
+      case 'VALORANT':
+        exampleNickNames = [
+          'Headshot',
+          'Vandal Therapy',
+          'NeonWasHere',
+          'PlantAndPray',
+          'LaggingInHeaven',
+        ];
+        break;
+
+      case 'League of Legends':
+        exampleNickNames = [
+          'GankMeMaybe',
+          'TeemoRuinedMyLife',
+          'MidOrFeed',
+          'BaronStealer',
+          'AFK_By_Design',
+        ];
+        break;
+
+      case 'Fortnite':
+        exampleNickNames = [
+          'BuildFightEnjoyer',
+          'CrankedOnSunday',
+          'NoScopeBanana',
+          'StormIsComing',
+          'DefaultDanceLord',
+        ];
+        break;
+
+      case 'Minecraft':
+        exampleNickNames = [
+          'Creeper',
+          'BlockEnjoyer',
+          'Diamond_Depression',
+          'SteveFromAccounting',
+          'CraftAndSuffer',
+        ];
+        break;
+
+      case 'PUBG':
+        exampleNickNames = [
+          'PanOfJustice',
+          'BushCamper200IQ',
+          'RedZoneVictim',
+          'LootAndDie',
+          'ThirdPartyEnjoyer',
+        ];
+        break;
+
+      case 'GTA V':
+        exampleNickNames = [
+          'LosSantosTaxi',
+          'TrustMeImFriendly',
+          'HeistWentWrong',
+          'NPC_With_Dreams',
+          'CopMagnet',
+        ];
+        break;
+
+      case 'Rainbow Six Siege':
+        exampleNickNames = [
+          'DronePhasePTSD',
+          'WallIsOptional',
+          'FriendlyBreach',
+          'FlashAndPray',
+          'DefuserLostAgain',
+        ];
+        break;
+
+      case 'World of Warcraft':
+        exampleNickNames = [
+          'LeeroyMaybe',
+          'ManaProblems',
+          'TankAndSpank',
+          'AFKInStormwind',
+          'LootCouncilVictim',
+        ];
+        break;
+
+      case 'Cyberpunk 2077':
+        exampleNickNames = [
+          'ChromeInMyVeins',
+          'NightCityNPC',
+          'JohnnyWasRight',
+          'GlitchInReality',
+          'CyberPsychosis',
+        ];
+        break;
+
+      case 'Team Fortress 2':
+        exampleNickNames = [
+          'MedicIsBusy',
+          'SpyBehindYou',
+          'SandvichTime',
+          'RandomCritsLOL',
+          'EngineerGaming',
+        ];
+        break;
+
+      case 'Roblox':
+        exampleNickNames = [
+          'FreeRobuxTrust',
+          'OofMoment',
+          'TycoonAddict',
+          'AvatarGoneWrong',
+          'KidWithAPlan',
+        ];
+        break;
+
+      case 'Among Us':
+        exampleNickNames = [
+          'NotMeIPromise',
+          'RedIsAlwaysSus',
+          'EmergencyMeeting',
+          'VentedAccidentally',
+          'TrustIssues',
+        ];
+        break;
+    }
+
     this.isLoading = true;
-    console.log(this.currentGame().name);
 
     const body = {
       game: this.currentGame().name,
+      length: [this.minLength, this.maxLength],
       numbers: this.numbers,
-      language: this.selectedLanguage,
+      language: this.getLanguageName(this.selectedLanguage),
       proStyle: this.proPlayerStyle,
-      style: 'chaotic',
-      mood: 'funny',
+      specialSymbols: this.specialSymbols,
+      examples: exampleNickNames,
+      gender: this.selectedGender,
+      tone: this.tone,
+      theme: this.theme,
+      allowBanned: this.allowBanned,
     };
     this.http.post<any>('https://nickspin.miatselski-artur.workers.dev', body, {}).subscribe({
       next: (res) => {
