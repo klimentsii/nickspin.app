@@ -133,17 +133,59 @@ export class App implements OnInit {
       .subscribe((event: NavigationEnd) => {
         this.currentUrl.set(event.url);
       });
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.custom-dropdown')) {
+          this.closeAllDropdowns();
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (this.dropdownOpen) this.checkDropdownPosition('language');
+        if (this.specialSymbolsDropdownOpen) this.checkDropdownPosition('specialSymbols');
+        if (this.themeDropdownOpen) this.checkDropdownPosition('theme');
+        if (this.toneDropdownOpen) this.checkDropdownPosition('tone');
+        if (this.uniquenessDropdownOpen) this.checkDropdownPosition('uniqueness');
+      });
+    }
   }
 
-  protected nameLength: number = 8;
+  protected minLength: number = 4;
+  protected maxLength: number = 16;
+  protected isDraggingMin: boolean = false;
+  protected isDraggingMax: boolean = false;
+  
+  private boundOnDragMinMouse?: (event: MouseEvent) => void;
+  private boundOnDragMinTouch?: (event: TouchEvent) => void;
+  private boundOnDragMaxMouse?: (event: MouseEvent) => void;
+  private boundOnDragMaxTouch?: (event: TouchEvent) => void;
+  private boundStopDragMin?: () => void;
+  private boundStopDragMax?: () => void;
 
   protected numbers: boolean = false;
   protected proPlayerStyle: boolean = false;
   protected dropdownOpen: boolean = false;
+  protected specialSymbolsDropdownOpen: boolean = false;
+  protected themeDropdownOpen: boolean = false;
+  protected toneDropdownOpen: boolean = false;
+  protected uniquenessDropdownOpen: boolean = false;
 
   protected aiWishes: string = '';
   protected selectedLanguage: string = 'en';
   protected selectedGender: string = 'any';
+  protected specialSymbols: string = 'any';
+  protected theme: string = 'any';
+  protected tone: string = 'neutral';
+  protected uniqueness: string = 'medium';
+  protected allowBanned: boolean = false;
+  
+  protected languageMenuTop: boolean = false;
+  protected specialSymbolsMenuTop: boolean = false;
+  protected themeMenuTop: boolean = false;
+  protected toneMenuTop: boolean = false;
+  protected uniquenessMenuTop: boolean = false;
 
   protected sidebarPinned: boolean = false;
   protected settingsPanelPinned: boolean = false;
@@ -179,7 +221,106 @@ export class App implements OnInit {
 
   protected selectLanguage(lang: Language) {
     this.selectedLanguage = lang.code;
-    this.dropdownOpen = true;
+    this.dropdownOpen = false;
+    this.closeAllDropdowns();
+  }
+
+  protected closeAllDropdowns(): void {
+    this.dropdownOpen = false;
+    this.specialSymbolsDropdownOpen = false;
+    this.themeDropdownOpen = false;
+    this.toneDropdownOpen = false;
+    this.uniquenessDropdownOpen = false;
+  }
+
+  protected toggleDropdown(dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness'): void {
+    if (dropdownType !== 'language') this.dropdownOpen = false;
+    if (dropdownType !== 'specialSymbols') this.specialSymbolsDropdownOpen = false;
+    if (dropdownType !== 'theme') this.themeDropdownOpen = false;
+    if (dropdownType !== 'tone') this.toneDropdownOpen = false;
+    if (dropdownType !== 'uniqueness') this.uniquenessDropdownOpen = false;
+    
+    if (typeof document !== 'undefined') {
+      const dropdown = document.querySelector(`[data-dropdown="${dropdownType}"]`) as HTMLElement;
+      if (dropdown) {
+        const shouldShowTop = this.calculateDropdownPosition(dropdown);
+        
+        switch (dropdownType) {
+          case 'language':
+            this.languageMenuTop = shouldShowTop;
+            break;
+          case 'specialSymbols':
+            this.specialSymbolsMenuTop = shouldShowTop;
+            break;
+          case 'theme':
+            this.themeMenuTop = shouldShowTop;
+            break;
+          case 'tone':
+            this.toneMenuTop = shouldShowTop;
+            break;
+          case 'uniqueness':
+            this.uniquenessMenuTop = shouldShowTop;
+            break;
+        }
+      }
+    }
+    
+    switch (dropdownType) {
+      case 'language':
+        this.dropdownOpen = !this.dropdownOpen;
+        break;
+      case 'specialSymbols':
+        this.specialSymbolsDropdownOpen = !this.specialSymbolsDropdownOpen;
+        break;
+      case 'theme':
+        this.themeDropdownOpen = !this.themeDropdownOpen;
+        break;
+      case 'tone':
+        this.toneDropdownOpen = !this.toneDropdownOpen;
+        break;
+      case 'uniqueness':
+        this.uniquenessDropdownOpen = !this.uniquenessDropdownOpen;
+        break;
+    }
+  }
+
+  private calculateDropdownPosition(dropdown: HTMLElement): boolean {
+    const rect = dropdown.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    
+    const estimatedMenuHeight = 250;
+    const padding = 20;
+    
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    
+    return spaceBelow < estimatedMenuHeight + padding && spaceAbove > spaceBelow;
+  }
+
+
+  private checkDropdownPosition(dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness'): void {
+    if (typeof document === 'undefined') return;
+
+    const dropdown = document.querySelector(`[data-dropdown="${dropdownType}"]`) as HTMLElement;
+    if (!dropdown) return;
+
+    const menu = dropdown.querySelector('.dropdown-menu') as HTMLElement;
+    if (!menu) return;
+
+    const rect = dropdown.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const menuHeight = menuRect.height;
+    const padding = 20;
+
+    if (spaceBelow < menuHeight + padding && spaceAbove > spaceBelow) {
+      menu.classList.add('dropdown-menu-top');
+    } else {
+      menu.classList.remove('dropdown-menu-top');
+    }
   }
   protected selectGame(gameId: string): void {
     this.router.navigate(['/', gameId]);
@@ -252,5 +393,123 @@ export class App implements OnInit {
     };
 
     return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
+  }
+
+  protected startDragMin(event: MouseEvent | TouchEvent): void {
+    this.isDraggingMin = true;
+    event.preventDefault();
+    if (typeof document !== 'undefined') {
+      this.boundOnDragMinMouse = (e: MouseEvent) => {
+        if (this.isDraggingMin) {
+          this.updateMinValue(e.clientX);
+        }
+      };
+      this.boundOnDragMinTouch = (e: TouchEvent) => {
+        if (this.isDraggingMin && e.touches.length > 0) {
+          this.updateMinValue(e.touches[0].clientX);
+        }
+      };
+      this.boundStopDragMin = () => this.stopDragMin();
+      document.addEventListener('mousemove', this.boundOnDragMinMouse);
+      document.addEventListener('mouseup', this.boundStopDragMin);
+      document.addEventListener('touchmove', this.boundOnDragMinTouch);
+      document.addEventListener('touchend', this.boundStopDragMin);
+    }
+  }
+
+  protected startDragMax(event: MouseEvent | TouchEvent): void {
+    this.isDraggingMax = true;
+    event.preventDefault();
+    if (typeof document !== 'undefined') {
+      this.boundOnDragMaxMouse = (e: MouseEvent) => {
+        if (this.isDraggingMax) {
+          this.updateMaxValue(e.clientX);
+        }
+      };
+      this.boundOnDragMaxTouch = (e: TouchEvent) => {
+        if (this.isDraggingMax && e.touches.length > 0) {
+          this.updateMaxValue(e.touches[0].clientX);
+        }
+      };
+      this.boundStopDragMax = () => this.stopDragMax();
+      document.addEventListener('mousemove', this.boundOnDragMaxMouse);
+      document.addEventListener('mouseup', this.boundStopDragMax);
+      document.addEventListener('touchmove', this.boundOnDragMaxTouch);
+      document.addEventListener('touchend', this.boundStopDragMax);
+    }
+  }
+
+  private stopDragMin(): void {
+    this.isDraggingMin = false;
+    if (typeof document !== 'undefined') {
+      if (this.boundOnDragMinMouse) {
+        document.removeEventListener('mousemove', this.boundOnDragMinMouse);
+      }
+      if (this.boundOnDragMinTouch) {
+        document.removeEventListener('touchmove', this.boundOnDragMinTouch);
+      }
+      if (this.boundStopDragMin) {
+        document.removeEventListener('mouseup', this.boundStopDragMin);
+        document.removeEventListener('touchend', this.boundStopDragMin);
+      }
+    }
+  }
+
+  private stopDragMax(): void {
+    this.isDraggingMax = false;
+    if (typeof document !== 'undefined') {
+      if (this.boundOnDragMaxMouse) {
+        document.removeEventListener('mousemove', this.boundOnDragMaxMouse);
+      }
+      if (this.boundOnDragMaxTouch) {
+        document.removeEventListener('touchmove', this.boundOnDragMaxTouch);
+      }
+      if (this.boundStopDragMax) {
+        document.removeEventListener('mouseup', this.boundStopDragMax);
+        document.removeEventListener('touchend', this.boundStopDragMax);
+      }
+    }
+  }
+
+  private updateMinValue(clientX: number): void {
+    const slider = document.querySelector('.dual-range-slider') as HTMLElement;
+    if (!slider) return;
+    
+    const rect = slider.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const min = 4;
+    const max = 32;
+    const newValue = Math.round(min + percent * (max - min));
+    
+    if (newValue <= this.maxLength) {
+      this.minLength = Math.max(4, Math.min(32, newValue));
+    }
+  }
+
+  private updateMaxValue(clientX: number): void {
+    const slider = document.querySelector('.dual-range-slider') as HTMLElement;
+    if (!slider) return;
+    
+    const rect = slider.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const min = 4;
+    const max = 32;
+    const newValue = Math.round(min + percent * (max - min));
+    
+    if (newValue >= this.minLength) {
+      this.maxLength = Math.max(4, Math.min(32, newValue));
+    }
+  }
+
+  protected getMinPercent(): number {
+    return ((this.minLength - 4) / (32 - 4)) * 100;
+  }
+
+  protected getMaxPercent(): number {
+    return ((this.maxLength - 4) / (32 - 4)) * 100;
+  }
+
+  protected getRangeWidth(): number {
+    return this.getMaxPercent() - this.getMinPercent();
   }
 }
