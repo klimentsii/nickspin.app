@@ -26,6 +26,7 @@ export class App implements OnInit {
   private currentLayer = 1;
   protected generatedNicknames: Array<{ id: string; nickname: string; liked: boolean }> = [];
   protected favoriteNicknames: Array<{ id: string; nickname: string; liked: boolean }> = [];
+  protected historyNicknames: Array<{ id: string; nickname: string; liked: boolean }> = [];
   protected isLoading: boolean = false;
   nickname: string = '';
   loading: boolean = false;
@@ -33,6 +34,8 @@ export class App implements OnInit {
   private nicknameIdCounter = 0;
   protected showCopyNotification: boolean = false;
   private readonly FAVORITES_STORAGE_KEY = 'nickspin_favorites';
+  private readonly HISTORY_STORAGE_KEY = 'nickspin_history';
+  private readonly MAX_HISTORY_SIZE = 100;
 
   constructor() {
     this.iconRegistry.addSvgIcon(
@@ -281,11 +284,15 @@ export class App implements OnInit {
           const newId = `nickname-${Date.now()}-${++this.nicknameIdCounter}`;
           const isFavorite = this.favoriteNicknames.some(fav => fav.nickname === processedNick);
           
-          this.generatedNicknames.push({ 
+          const nicknameItem = { 
             id: newId, 
             nickname: processedNick, 
             liked: isFavorite 
-          });
+          };
+          
+          this.generatedNicknames.push(nicknameItem);
+          
+          this.addToHistory(nicknameItem);
         });
         
         if (nicknames.length > 0) {
@@ -304,6 +311,7 @@ export class App implements OnInit {
   ngOnInit(): void {
     this.loadPinnedState();
     this.loadFavorites();
+    this.loadHistory();
 
     this.games.forEach((game) => {
       this.iconRegistry.addSvgIcon(
@@ -374,10 +382,12 @@ export class App implements OnInit {
   protected sidebarPinned: boolean = false;
   protected settingsPanelPinned: boolean = false;
   protected favoritesPanelPinned: boolean = false;
+  protected historyPanelPinned: boolean = false;
 
   private readonly SIDEBAR_PIN_KEY = 'nickspin_sidebar_pinned';
   private readonly SETTINGS_PANEL_PIN_KEY = 'nickspin_settings_panel_pinned';
   private readonly FAVORITES_PANEL_PIN_KEY = 'nickspin_favorites_panel_pinned';
+  private readonly HISTORY_PANEL_PIN_KEY = 'nickspin_history_panel_pinned';
 
   protected readonly currentGameId = computed(() => {
     const url = this.currentUrl().replace(/^\//, '');
@@ -548,11 +558,17 @@ export class App implements OnInit {
     this.savePinnedState();
   }
 
+  protected toggleHistoryPanelPin(): void {
+    this.historyPanelPinned = !this.historyPanelPinned;
+    this.savePinnedState();
+  }
+
   private loadPinnedState(): void {
     if (typeof window !== 'undefined' && window.localStorage) {
       const sidebarPinned = localStorage.getItem(this.SIDEBAR_PIN_KEY);
       const settingsPanelPinned = localStorage.getItem(this.SETTINGS_PANEL_PIN_KEY);
       const favoritesPanelPinned = localStorage.getItem(this.FAVORITES_PANEL_PIN_KEY);
+      const historyPanelPinned = localStorage.getItem(this.HISTORY_PANEL_PIN_KEY);
 
       if (sidebarPinned !== null) {
         this.sidebarPinned = sidebarPinned === 'true';
@@ -565,6 +581,10 @@ export class App implements OnInit {
       if (favoritesPanelPinned !== null) {
         this.favoritesPanelPinned = favoritesPanelPinned === 'true';
       }
+
+      if (historyPanelPinned !== null) {
+        this.historyPanelPinned = historyPanelPinned === 'true';
+      }
     }
   }
 
@@ -573,6 +593,7 @@ export class App implements OnInit {
       localStorage.setItem(this.SIDEBAR_PIN_KEY, String(this.sidebarPinned));
       localStorage.setItem(this.SETTINGS_PANEL_PIN_KEY, String(this.settingsPanelPinned));
       localStorage.setItem(this.FAVORITES_PANEL_PIN_KEY, String(this.favoritesPanelPinned));
+      localStorage.setItem(this.HISTORY_PANEL_PIN_KEY, String(this.historyPanelPinned));
     }
   }
 
@@ -725,18 +746,34 @@ export class App implements OnInit {
   }
 
   protected toggleLike(id: string): void {
-    const nicknameItem = this.generatedNicknames.find(item => item.id === id);
+    let nicknameItem = this.generatedNicknames.find(item => item.id === id);
+    
+    if (!nicknameItem) {
+      nicknameItem = this.historyNicknames.find(item => item.id === id);
+    }
+    
     if (nicknameItem) {
       nicknameItem.liked = !nicknameItem.liked;
       
       if (nicknameItem.liked) {
-        const exists = this.favoriteNicknames.some(fav => fav.nickname === nicknameItem.nickname);
+        const exists = this.favoriteNicknames.some(fav => fav.nickname === nicknameItem!.nickname);
         if (!exists) {
           const favoriteItem = { ...nicknameItem };
           this.favoriteNicknames.push(favoriteItem);
         }
       } else {
-        this.favoriteNicknames = this.favoriteNicknames.filter(item => item.nickname !== nicknameItem.nickname);
+        this.favoriteNicknames = this.favoriteNicknames.filter(item => item.nickname !== nicknameItem!.nickname);
+      }
+      
+      const historyItem = this.historyNicknames.find(item => item.nickname === nicknameItem!.nickname);
+      if (historyItem) {
+        historyItem.liked = nicknameItem.liked;
+        this.saveHistory();
+      }
+      
+      const generatedItem = this.generatedNicknames.find(item => item.nickname === nicknameItem!.nickname);
+      if (generatedItem) {
+        generatedItem.liked = nicknameItem.liked;
       }
       
       this.saveFavorites();
@@ -778,5 +815,61 @@ export class App implements OnInit {
         console.error('Error saving favorites:', e);
       }
     }
+  }
+
+  private addToHistory(nicknameItem: { id: string; nickname: string; liked: boolean }): void {
+    const existingIndex = this.historyNicknames.findIndex(item => item.nickname === nicknameItem.nickname);
+    
+    if (existingIndex !== -1) {
+      const existing = this.historyNicknames[existingIndex];
+      existing.liked = nicknameItem.liked;
+      this.historyNicknames.splice(existingIndex, 1);
+      this.historyNicknames.unshift(existing);
+    } else {
+      const isFavorite = this.favoriteNicknames.some(fav => fav.nickname === nicknameItem.nickname);
+      const historyItem = {
+        ...nicknameItem,
+        liked: isFavorite
+      };
+      
+      this.historyNicknames.unshift(historyItem);
+      
+      if (this.historyNicknames.length > this.MAX_HISTORY_SIZE) {
+        this.historyNicknames = this.historyNicknames.slice(0, this.MAX_HISTORY_SIZE);
+      }
+    }
+    
+    this.saveHistory();
+  }
+
+  private loadHistory(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const stored = localStorage.getItem(this.HISTORY_STORAGE_KEY);
+        if (stored) {
+          this.historyNicknames = JSON.parse(stored);
+          this.historyNicknames.forEach(item => {
+            item.liked = this.favoriteNicknames.some(fav => fav.nickname === item.nickname);
+          });
+        }
+      } catch (e) {
+        console.error('Error loading history:', e);
+      }
+    }
+  }
+
+  private saveHistory(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(this.HISTORY_STORAGE_KEY, JSON.stringify(this.historyNicknames));
+      } catch (e) {
+        console.error('Error saving history:', e);
+      }
+    }
+  }
+
+  protected removeFromHistory(id: string): void {
+    this.historyNicknames = this.historyNicknames.filter(item => item.id !== id);
+    this.saveHistory();
   }
 }

@@ -1,47 +1,114 @@
 <div class="background-layer background-layer-1"></div>
 <div class="background-layer background-layer-2"></div>
 <div class="app-container">
-  <aside class="sidebar" [class.pinned]="sidebarPinned">
-    <nav class="menu">
-      <div class="menu-header">
-        <h2 class="menu-title">
-          <span class="menu-title-icon">
-            <mat-icon svgIcon="game"></mat-icon>
-          </span>
-          <span class="menu-title-text">Games</span>
-          <button
-            class="pin-button"
-            (click)="toggleSidebarPin(); $event.stopPropagation()"
-            [class.pinned]="sidebarPinned"
-            [style.--game-color]="currentGameAccentColor()"
-            [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-          >
-            <mat-icon>{{ sidebarPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
-          </button>
-        </h2>
-        <div class="menu-subtitle">Games custom filters</div>
-      </div>
-      <ul class="menu-list">
-        @for (game of games; track game.id) {
-        <li class="menu-item">
-          <a
-            (click)="selectGame(game.id); $event.preventDefault()"
-            [class.active]="isActive(game.id)"
-            [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
-            [style.--game-color]="getGameColor(game.id)"
-            [style.--game-color-rgb]="getGameColorRgb(game.id)"
-            class="menu-link"
-          >
-            <span class="game-logo">
-              <mat-icon [svgIcon]="game.id"></mat-icon>
+  <div class="left-panel-wrapper">
+    <aside class="sidebar" [class.pinned]="sidebarPinned">
+      <nav class="menu">
+        <div class="menu-header">
+          <h2 class="menu-title">
+            <span class="menu-title-icon">
+              <mat-icon svgIcon="game"></mat-icon>
             </span>
-            <span class="game-name">{{ game.name }}</span>
-          </a>
-        </li>
-        }
-      </ul>
-    </nav>
-  </aside>
+            <span class="menu-title-text">Games</span>
+            <button
+              class="pin-button"
+              (click)="toggleSidebarPin(); $event.stopPropagation()"
+              [class.pinned]="sidebarPinned"
+              [style.--game-color]="currentGameAccentColor()"
+              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+            >
+              <mat-icon>{{ sidebarPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+            </button>
+          </h2>
+          <div class="menu-subtitle">Games custom filters</div>
+        </div>
+        <ul class="menu-list">
+          @for (game of games; track game.id) {
+          <li class="menu-item">
+            <a
+              (click)="selectGame(game.id); $event.preventDefault()"
+              [class.active]="isActive(game.id)"
+              [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
+              [style.--game-color]="getGameColor(game.id)"
+              [style.--game-color-rgb]="getGameColorRgb(game.id)"
+              class="menu-link"
+            >
+              <span class="game-logo">
+                <mat-icon [svgIcon]="game.id"></mat-icon>
+              </span>
+              <span class="game-name">{{ game.name }}</span>
+            </a>
+          </li>
+          }
+        </ul>
+      </nav>
+    </aside>
+    @if (historyNicknames.length > 0) {
+    <aside
+      class="history-panel"
+      [class.pinned]="historyPanelPinned"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <div class="history-button">
+        <mat-icon>history</mat-icon>
+        <div class="history-header">
+          <h3 class="history-title">
+            <span>History</span>
+            <button
+              class="pin-button"
+              (click)="toggleHistoryPanelPin(); $event.stopPropagation()"
+              [class.pinned]="historyPanelPinned"
+              [style.--game-color]="currentGameAccentColor()"
+              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+            >
+              <mat-icon>{{ historyPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+            </button>
+          </h3>
+        </div>
+      </div>
+      <div class="history-content-wrapper">
+        <div class="history-content">
+          @for (historyItem of historyNicknames; track historyItem.id) {
+          <div class="history-card">
+            <div class="history-text">{{ historyItem.nickname }}</div>
+            <div class="history-actions">
+              <button
+                class="action-button copy-button"
+                (click)="copyNickname(historyItem.nickname)"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Copy"
+              >
+                <mat-icon>content_copy</mat-icon>
+              </button>
+              <button
+                class="action-button like-button"
+                [class.liked]="historyItem.liked"
+                (click)="toggleLike(historyItem.id)"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Favorite"
+              >
+                <mat-icon>{{ historyItem.liked ? 'star' : 'star_border' }}</mat-icon>
+              </button>
+              <button
+                class="action-button remove-button"
+                (click)="removeFromHistory(historyItem.id)"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Remove"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </aside>
+    }
+  </div>
 
   <main class="main-content">
     <div class="content-container">
