@@ -107,12 +107,68 @@
   </div>
   }
 
-  <aside
-    class="settings-panel"
-    [class.pinned]="settingsPanelPinned"
-    [style.--game-color]="currentGameAccentColor()"
-    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-  >
+  <div class="right-panel-wrapper">
+    @if (favoriteNicknames.length > 0) {
+    <aside
+      class="favorites-panel"
+      [class.pinned]="favoritesPanelPinned"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <div class="favorites-button">
+        <mat-icon>star</mat-icon>
+        <div class="favorites-header">
+          <h3 class="favorites-title">
+            <span>Favorites</span>
+            <button
+              class="pin-button"
+              (click)="toggleFavoritesPanelPin(); $event.stopPropagation()"
+              [class.pinned]="favoritesPanelPinned"
+              [style.--game-color]="currentGameAccentColor()"
+              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+            >
+              <mat-icon>{{ favoritesPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+            </button>
+          </h3>
+        </div>
+      </div>
+      <div class="favorites-content-wrapper">
+        <div class="favorites-content">
+          @for (favoriteItem of favoriteNicknames; track favoriteItem.id) {
+          <div class="favorite-card">
+            <div class="favorite-text">{{ favoriteItem.nickname }}</div>
+            <div class="favorite-actions">
+              <button
+                class="action-button copy-button"
+                (click)="copyNickname(favoriteItem.nickname)"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Copy"
+              >
+                <mat-icon>content_copy</mat-icon>
+              </button>
+              <button
+                class="action-button remove-button"
+                (click)="removeFromFavorites(favoriteItem.id)"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Remove"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </aside>
+    }
+    <aside
+      class="settings-panel"
+      [class.pinned]="settingsPanelPinned"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
     <div class="panel-header">
       <h3 class="panel-title">
         <span class="panel-title-icon">
@@ -621,4 +677,5 @@
       </div>
     </div>
   </aside>
+  </div>
 </div>
