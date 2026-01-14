@@ -10,7 +10,10 @@ export interface Language {
   code: string;
   name: string;
 }
-
+export type GameName = string;
+export interface NicknameApiResponse {
+  nickname: string | string[];
+}
 export const GAMES: Game[] = [
   {
     name: 'Counter-Strike 2',
@@ -129,3 +132,93 @@ export const LANGUAGES: Language[] = [
   { code: 'cn', name: '中文' },
   { code: 'kr', name: '한국어' },
 ];
+
+export const NICKNAME_EXAMPLES_BY_GAME: Record<GameName, string[]> = {
+  'Dota 2': [
+    'RAMZES666',
+    'BuyBackLater',
+    'ward pls',
+    'MID_OR_FEED',
+    'RoshanWasWatching',
+    'Agent Gabena',
+    'FRESH_MEAT',
+    'The_DOTER_OT_BOGA',
+    'JIecHuK',
+    'WENOK_KAK_DELA',
+    'R1o|Er',
+  ],
+
+  'Counter-Strike 2': ['s1mple', 'D1[n]eX', 'V Λ C U U M', 'S.T.A.L.K.R', 'SmokeThenPanic'],
+
+  VALORANT: ['PlantAndPray', 'NeonWasHere', 'LagPeekMaster', 'Vandal Therapy', 'UltReadyMaybe'],
+
+  'League of Legends': [
+    'MidOrFeed',
+    'TeemoRuinedMyLife',
+    'JG Diff Again',
+    'BaronAt20',
+    'AFK_By_Design',
+  ],
+
+  Fortnite: [
+    'CrankedOnMonday',
+    'BuildThenPanic',
+    'DefaultDanceEnjoyer',
+    'StormIsPersonal',
+    'NoScopeBanana',
+  ],
+
+  Minecraft: [
+    'SteveFromAccounting',
+    'Creeper_Insurance',
+    'BlockByBlock',
+    'Diamond_Depression',
+    'CraftAndRegret',
+  ],
+
+  PUBG: ['BushCamper200IQ', 'PanOfJustice', 'LootAndDie', 'RedZoneVictim', 'ThirdPartyEnjoyer'],
+
+  'GTA V': ['NPC_With_Dreams', 'LosSantosTaxi', 'TrustMeImFriendly', 'HeistWentWrong', 'CopMagnet'],
+
+  'Rainbow Six Siege': [
+    'DronePhasePTSD',
+    'WallIsOptional',
+    'FlashAndPray',
+    'DefuserLostAgain',
+    'FriendlyBreach',
+  ],
+
+  'World of Warcraft': [
+    'LeeroyMaybe',
+    'AFKInStormwind',
+    'LootCouncilVictim',
+    'ManaProblems',
+    'TankAndSpank',
+  ],
+
+  'Cyberpunk 2077': [
+    'ChromeInMyVeins',
+    'NightCityNPC',
+    'JohnnyWasRight',
+    'GlitchInReality',
+    'CyberPsychosis',
+  ],
+
+  'Team Fortress 2': [
+    'RandomCritsLOL',
+    'MedicIsBusy',
+    'SpyBehindYou',
+    'SandvichTime',
+    'EngineerGaming',
+  ],
+
+  Roblox: ['FreeRobuxTrust', 'OofMoment', 'AvatarGoneWrong', 'TycoonAddict', 'KidWithAPlan'],
+
+  'Among Us': [
+    'RedIsAlwaysSus',
+    'NotMeIPromise',
+    'EmergencyMeeting',
+    'VentedAccidentally',
+    'TrustIssues',
+  ],
+};

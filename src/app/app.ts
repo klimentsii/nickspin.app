@@ -1,12 +1,13 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { GAMES, Language, LANGUAGES } from './games.constants';
+import { GAMES, Language, LANGUAGES, NicknameApiResponse } from './games.constants';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { filter } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { NicknameExampleSwitcherService } from './services/nickname-example-switcher.service';
 @Component({
   selector: 'app-root',
   imports: [CommonModule, FormsModule, MatIconModule],
@@ -21,6 +22,7 @@ export class App implements OnInit {
   protected iconRegistry: MatIconRegistry = inject(MatIconRegistry);
   protected sanitizer: DomSanitizer = inject(DomSanitizer);
   private http: HttpClient = inject(HttpClient);
+  private nicknameExampleSwitcher = inject(NicknameExampleSwitcherService);
 
   protected readonly currentUrl = signal(this.router.url);
   private currentLayer = 1;
@@ -37,6 +39,12 @@ export class App implements OnInit {
   private readonly HISTORY_STORAGE_KEY = 'nickspin_history';
   private readonly MAX_HISTORY_SIZE = 100;
 
+  selectedLength: string = 'any';
+  options = [
+    { label: 'Any', value: 'any' },
+    { label: 'Short', value: 'short' },
+    { label: 'Long', value: 'long' },
+  ];
   constructor() {
     this.iconRegistry.addSvgIcon(
       'game',
@@ -98,224 +106,83 @@ export class App implements OnInit {
       }
     });
   }
+  selectLength(value: string) {
+    this.selectedLength = value;
+  }
   generateNickname() {
-    let exampleNickNames: string[] = [];
-
-    switch (this.currentGame().name) {
-      case 'Dota 2':
-        exampleNickNames = ['RAMZES666', 'Mr.ProperAnGeL', 'Lina X', 'klimentsii', 'artlor'];
-        break;
-
-      case 'Counter-Strike 2':
-        exampleNickNames = [
-          's1mple',
-          'Captain VAC Sparrow',
-          'Friendly Fire',
-          'Jean Claude VACban',
-          'RushB_Or_Cry',
-        ];
-        break;
-
-      case 'VALORANT':
-        exampleNickNames = [
-          'Headshot',
-          'Vandal Therapy',
-          'NeonWasHere',
-          'PlantAndPray',
-          'LaggingInHeaven',
-        ];
-        break;
-
-      case 'League of Legends':
-        exampleNickNames = [
-          'GankMeMaybe',
-          'TeemoRuinedMyLife',
-          'MidOrFeed',
-          'BaronStealer',
-          'AFK_By_Design',
-        ];
-        break;
-
-      case 'Fortnite':
-        exampleNickNames = [
-          'BuildFightEnjoyer',
-          'CrankedOnSunday',
-          'NoScopeBanana',
-          'StormIsComing',
-          'DefaultDanceLord',
-        ];
-        break;
-
-      case 'Minecraft':
-        exampleNickNames = [
-          'Creeper',
-          'BlockEnjoyer',
-          'Diamond_Depression',
-          'SteveFromAccounting',
-          'CraftAndSuffer',
-        ];
-        break;
-
-      case 'PUBG':
-        exampleNickNames = [
-          'PanOfJustice',
-          'BushCamper200IQ',
-          'RedZoneVictim',
-          'LootAndDie',
-          'ThirdPartyEnjoyer',
-        ];
-        break;
-
-      case 'GTA V':
-        exampleNickNames = [
-          'LosSantosTaxi',
-          'TrustMeImFriendly',
-          'HeistWentWrong',
-          'NPC_With_Dreams',
-          'CopMagnet',
-        ];
-        break;
-
-      case 'Rainbow Six Siege':
-        exampleNickNames = [
-          'DronePhasePTSD',
-          'WallIsOptional',
-          'FriendlyBreach',
-          'FlashAndPray',
-          'DefuserLostAgain',
-        ];
-        break;
-
-      case 'World of Warcraft':
-        exampleNickNames = [
-          'LeeroyMaybe',
-          'ManaProblems',
-          'TankAndSpank',
-          'AFKInStormwind',
-          'LootCouncilVictim',
-        ];
-        break;
-
-      case 'Cyberpunk 2077':
-        exampleNickNames = [
-          'ChromeInMyVeins',
-          'NightCityNPC',
-          'JohnnyWasRight',
-          'GlitchInReality',
-          'CyberPsychosis',
-        ];
-        break;
-
-      case 'Team Fortress 2':
-        exampleNickNames = [
-          'MedicIsBusy',
-          'SpyBehindYou',
-          'SandvichTime',
-          'RandomCritsLOL',
-          'EngineerGaming',
-        ];
-        break;
-
-      case 'Roblox':
-        exampleNickNames = [
-          'FreeRobuxTrust',
-          'OofMoment',
-          'TycoonAddict',
-          'AvatarGoneWrong',
-          'KidWithAPlan',
-        ];
-        break;
-
-      case 'Among Us':
-        exampleNickNames = [
-          'NotMeIPromise',
-          'RedIsAlwaysSus',
-          'EmergencyMeeting',
-          'VentedAccidentally',
-          'TrustIssues',
-        ];
-        break;
-
-      case 'Clash Royale':
-        exampleNickNames = [
-          'PekkaMaster',
-          'ElixirWaster',
-          'ThreeCrownKing',
-          'TowerDestroyer',
-          'CardCollector',
-        ];
-        break;
-    }
-
     this.isLoading = true;
 
     const body = {
       game: this.currentGame().name,
-      length: [this.minLength, this.maxLength],
+      length: this.selectedLength,
+      aiCustomization: this.aiWishes,
       numbers: this.numbers,
       language: this.getLanguageName(this.selectedLanguage),
-      proStyle: this.proPlayerStyle,
       specialSymbols: this.specialSymbols,
-      examples: exampleNickNames,
-      gender: this.selectedGender,
-      tone: this.tone,
       theme: this.theme,
       allowBanned: this.allowBanned,
+      gender: this.selectedGender,
+      examples: this.nicknameExampleSwitcher.getExamples(this.currentGame().name),
     };
-    this.http.post<any>('https://nickspin.miatselski-artur.workers.dev', body, {}).subscribe({
-      next: (res) => {
-        console.log(res);
-        
-        this.generatedNicknames = [];
-        
-        let nicknames: string[] = [];
-        
-        if (typeof res.nickname === 'string') {
-          try {
-            const parsed = JSON.parse(res.nickname);
-            nicknames = Array.isArray(parsed) ? parsed : [res.nickname];
-          } catch (e) {
-            nicknames = [res.nickname];
-          }
-        } else if (Array.isArray(res.nickname)) {
-          nicknames = res.nickname;
-        } else {
-          nicknames = [res.nickname];
-        }
-        
-        nicknames.forEach((nick: string) => {
-          let processedNick = nick;
-          
-          if (this.usedNicknames.has(processedNick)) {
-            processedNick += Math.floor(Math.random() * 100);
-          }
-          this.usedNicknames.add(processedNick);
-          
-          const newId = `nickname-${Date.now()}-${++this.nicknameIdCounter}`;
-          const isFavorite = this.favoriteNicknames.some(fav => fav.nickname === processedNick);
-          
-          const nicknameItem = { 
-            id: newId, 
-            nickname: processedNick, 
-            liked: isFavorite 
-          };
-          
-          this.generatedNicknames.push(nicknameItem);
-          
-          this.addToHistory(nicknameItem);
+
+    const historyNicknames: string[] = JSON.parse(
+      localStorage.getItem('nickspin_history') || '[]'
+    ).map((item: { id: string; nickname: string; liked: boolean }) => item.nickname);
+
+    const MAX_ATTEMPTS = 5;
+    let attempts = 0;
+    const uniqueNicknames: string[] = [];
+
+    const fetchNicknames = () => {
+      attempts++;
+      this.http
+        .post<NicknameApiResponse>('https://nickspin.miatselski-artur.workers.dev', body)
+        .subscribe({
+          next: (res) => {
+            let nicknames: string[] = [];
+            if (typeof res.nickname === 'string') {
+              try {
+                const parsed = JSON.parse(res.nickname);
+                nicknames = Array.isArray(parsed) ? parsed : [res.nickname];
+              } catch {
+                nicknames = [res.nickname];
+              }
+            } else if (Array.isArray(res.nickname)) {
+              nicknames = res.nickname;
+            } else {
+              nicknames = [res.nickname];
+            }
+
+            nicknames.forEach((nick) => {
+              if (!historyNicknames.includes(nick) && !uniqueNicknames.includes(nick)) {
+                uniqueNicknames.push(nick);
+              }
+            });
+
+            if (uniqueNicknames.length < 5 && attempts < MAX_ATTEMPTS) {
+              fetchNicknames();
+              return;
+            }
+
+            this.generatedNicknames = uniqueNicknames.slice(0, 5).map((nick) => {
+              const newId = `nickname-${Date.now()}-${++this.nicknameIdCounter}`;
+              const isFavorite = this.favoriteNicknames.some((fav) => fav.nickname === nick);
+              const item = { id: newId, nickname: nick, liked: isFavorite };
+              this.addToHistory(item);
+              return item;
+            });
+
+            this.nickname = this.generatedNicknames[0]?.nickname || '';
+            this.isLoading = false;
+          },
+          error: (err) => {
+            console.error(err);
+            this.isLoading = false;
+          },
         });
-        
-        if (nicknames.length > 0) {
-          this.nickname = nicknames[0];
-        }
-        
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error(err);
-        this.isLoading = false;
-      },
-    });
+    };
+
+    fetchNicknames();
   }
 
   ngOnInit(): void {
@@ -756,50 +623,60 @@ export class App implements OnInit {
   }
 
   protected toggleLike(id: string): void {
-    let nicknameItem = this.generatedNicknames.find(item => item.id === id);
-    
+    let nicknameItem = this.generatedNicknames.find((item) => item.id === id);
+
     if (!nicknameItem) {
-      nicknameItem = this.historyNicknames.find(item => item.id === id);
+      nicknameItem = this.historyNicknames.find((item) => item.id === id);
     }
-    
+
     if (nicknameItem) {
       nicknameItem.liked = !nicknameItem.liked;
-      
+
       if (nicknameItem.liked) {
-        const exists = this.favoriteNicknames.some(fav => fav.nickname === nicknameItem!.nickname);
+        const exists = this.favoriteNicknames.some(
+          (fav) => fav.nickname === nicknameItem!.nickname
+        );
         if (!exists) {
           const favoriteItem = { ...nicknameItem };
           this.favoriteNicknames.push(favoriteItem);
         }
       } else {
-        this.favoriteNicknames = this.favoriteNicknames.filter(item => item.nickname !== nicknameItem!.nickname);
+        this.favoriteNicknames = this.favoriteNicknames.filter(
+          (item) => item.nickname !== nicknameItem!.nickname
+        );
       }
-      
-      const historyItem = this.historyNicknames.find(item => item.nickname === nicknameItem!.nickname);
+
+      const historyItem = this.historyNicknames.find(
+        (item) => item.nickname === nicknameItem!.nickname
+      );
       if (historyItem) {
         historyItem.liked = nicknameItem.liked;
         this.saveHistory();
       }
-      
-      const generatedItem = this.generatedNicknames.find(item => item.nickname === nicknameItem!.nickname);
+
+      const generatedItem = this.generatedNicknames.find(
+        (item) => item.nickname === nicknameItem!.nickname
+      );
       if (generatedItem) {
         generatedItem.liked = nicknameItem.liked;
       }
-      
+
       this.saveFavorites();
     }
   }
 
   protected removeFromFavorites(id: string): void {
-    const favoriteItem = this.favoriteNicknames.find(item => item.id === id);
+    const favoriteItem = this.favoriteNicknames.find((item) => item.id === id);
     if (favoriteItem) {
-      this.favoriteNicknames = this.favoriteNicknames.filter(item => item.id !== id);
-      
-      const nicknameItem = this.generatedNicknames.find(item => item.nickname === favoriteItem.nickname);
+      this.favoriteNicknames = this.favoriteNicknames.filter((item) => item.id !== id);
+
+      const nicknameItem = this.generatedNicknames.find(
+        (item) => item.nickname === favoriteItem.nickname
+      );
       if (nicknameItem) {
         nicknameItem.liked = false;
       }
-      
+
       this.saveFavorites();
     }
   }
@@ -828,27 +705,31 @@ export class App implements OnInit {
   }
 
   private addToHistory(nicknameItem: { id: string; nickname: string; liked: boolean }): void {
-    const existingIndex = this.historyNicknames.findIndex(item => item.nickname === nicknameItem.nickname);
-    
+    const existingIndex = this.historyNicknames.findIndex(
+      (item) => item.nickname === nicknameItem.nickname
+    );
+
     if (existingIndex !== -1) {
       const existing = this.historyNicknames[existingIndex];
       existing.liked = nicknameItem.liked;
       this.historyNicknames.splice(existingIndex, 1);
       this.historyNicknames.unshift(existing);
     } else {
-      const isFavorite = this.favoriteNicknames.some(fav => fav.nickname === nicknameItem.nickname);
+      const isFavorite = this.favoriteNicknames.some(
+        (fav) => fav.nickname === nicknameItem.nickname
+      );
       const historyItem = {
         ...nicknameItem,
-        liked: isFavorite
+        liked: isFavorite,
       };
-      
+
       this.historyNicknames.unshift(historyItem);
-      
+
       if (this.historyNicknames.length > this.MAX_HISTORY_SIZE) {
         this.historyNicknames = this.historyNicknames.slice(0, this.MAX_HISTORY_SIZE);
       }
     }
-    
+
     this.saveHistory();
   }
 
@@ -858,8 +739,8 @@ export class App implements OnInit {
         const stored = localStorage.getItem(this.HISTORY_STORAGE_KEY);
         if (stored) {
           this.historyNicknames = JSON.parse(stored);
-          this.historyNicknames.forEach(item => {
-            item.liked = this.favoriteNicknames.some(fav => fav.nickname === item.nickname);
+          this.historyNicknames.forEach((item) => {
+            item.liked = this.favoriteNicknames.some((fav) => fav.nickname === item.nickname);
           });
         }
       } catch (e) {
@@ -879,7 +760,7 @@ export class App implements OnInit {
   }
 
   protected removeFromHistory(id: string): void {
-    this.historyNicknames = this.historyNicknames.filter(item => item.id !== id);
+    this.historyNicknames = this.historyNicknames.filter((item) => item.id !== id);
     this.saveHistory();
   }
 }

@@ -272,34 +272,18 @@
             <div class="filter-content">
               <div class="filter-header">
                 <span class="filter-name">Length</span>
-                <span class="filter-value">{{ minLength }}-{{ maxLength }}</span>
               </div>
               <div class="dual-range-container">
-                <div class="dual-range-slider">
-                  <div class="dual-range-track">
-                    <div
-                      class="dual-range-fill"
-                      [style.left.%]="getMinPercent()"
-                      [style.width.%]="getRangeWidth()"
-                    ></div>
-                  </div>
-                  <div
-                    class="dual-range-thumb dual-range-thumb-min"
-                    [style.left.%]="getMinPercent()"
-                    (mousedown)="startDragMin($event)"
-                    (touchstart)="startDragMin($event)"
-                  ></div>
-                  <div
-                    class="dual-range-thumb dual-range-thumb-max"
-                    [style.left.%]="getMaxPercent()"
-                    (mousedown)="startDragMax($event)"
-                    (touchstart)="startDragMax($event)"
-                  ></div>
-                </div>
-              </div>
-              <div class="range-labels">
-                <span>4</span>
-                <span>32</span>
+                <label
+                  class="radio-option"
+                  [class.active]="selectedLength === option.value"
+                  *ngFor="let option of options"
+                  (click)="selectLength(option.value)"
+                >
+                  <div class="radio-circle"></div>
+                  <span>{{ option.label }}</span>
+                  <input type="radio" [value]="option.value" name="length" hidden />
+                </label>
               </div>
             </div>
           </div>
