@@ -110,6 +110,13 @@ export const GAMES: Game[] = [
     bgColor: '#6B1A4A',
     color: '#C53B94',
   },
+  {
+    name: 'Clash Royale',
+    id: 'clash-royale',
+    defaultSettings: null,
+    bgColor: '#6B4A1A',
+    color: '#C5943B',
+  },
 ];
 
 export const LANGUAGES: Language[] = [

@@ -235,6 +235,16 @@ export class App implements OnInit {
           'TrustIssues',
         ];
         break;
+
+      case 'Clash Royale':
+        exampleNickNames = [
+          'PekkaMaster',
+          'ElixirWaster',
+          'ThreeCrownKing',
+          'TowerDestroyer',
+          'CardCollector',
+        ];
+        break;
     }
 
     this.isLoading = true;
