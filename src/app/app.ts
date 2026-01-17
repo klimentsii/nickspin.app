@@ -269,6 +269,8 @@ export class App implements OnInit {
   protected favoritesPanelPinned: boolean = false;
   protected historyPanelPinned: boolean = false;
 
+  protected mobileActiveSection: 'games' | 'history' | 'spin' | 'favorites' | 'filters' = 'spin';
+
   private readonly SIDEBAR_PIN_KEY = 'nickspin_sidebar_pinned';
   private readonly SETTINGS_PANEL_PIN_KEY = 'nickspin_settings_panel_pinned';
   private readonly FAVORITES_PANEL_PIN_KEY = 'nickspin_favorites_panel_pinned';
@@ -770,5 +772,15 @@ export class App implements OnInit {
   protected removeFromHistory(id: string): void {
     this.historyNicknames = this.historyNicknames.filter((item) => item.id !== id);
     this.saveHistory();
+  }
+
+  protected selectMobileSection(section: 'games' | 'history' | 'spin' | 'favorites' | 'filters'): void {
+    this.mobileActiveSection = section;
+  }
+
+  protected getMobileSliderOffset(): number {
+    const sections = ['games', 'history', 'spin', 'favorites', 'filters'];
+    const index = sections.indexOf(this.mobileActiveSection);
+    return -index * 100;
   }
 }

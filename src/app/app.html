@@ -1,5 +1,527 @@
 <div class="background-layer background-layer-1"></div>
 <div class="background-layer background-layer-2"></div>
+
+<div class="mobile-nav-container">
+  <header class="mobile-header">
+    <button
+      class="mobile-header-icon"
+      [class.active]="mobileActiveSection === 'games'"
+      (click)="selectMobileSection('games')"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <mat-icon svgIcon="game"></mat-icon>
+    </button>
+    <button
+      class="mobile-header-icon"
+      [class.active]="mobileActiveSection === 'history'"
+      (click)="selectMobileSection('history')"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <mat-icon>history</mat-icon>
+    </button>
+    <button
+      class="mobile-header-icon"
+      [class.active]="mobileActiveSection === 'spin'"
+      (click)="selectMobileSection('spin')"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <mat-icon>sync</mat-icon>
+    </button>
+    <button
+      class="mobile-header-icon"
+      [class.active]="mobileActiveSection === 'favorites'"
+      (click)="selectMobileSection('favorites')"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <mat-icon>star</mat-icon>
+    </button>
+    <button
+      class="mobile-header-icon"
+      [class.active]="mobileActiveSection === 'filters'"
+      (click)="selectMobileSection('filters')"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <mat-icon>tune</mat-icon>
+    </button>
+  </header>
+  <div class="mobile-content-wrapper">
+    <div
+      class="mobile-content-slider"
+      [style.transform]="'translateX(' + getMobileSliderOffset() + 'vw)'"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <div class="mobile-section mobile-section-games">
+        <div class="mobile-section-content">
+          <h3 class="mobile-section-title">Games</h3>
+          <ul class="mobile-games-list">
+            @for (game of games; track game.id) {
+            <li class="mobile-game-item">
+              <button
+                class="mobile-game-button"
+                [class.active]="isActive(game.id)"
+                (click)="selectGame(game.id)"
+                [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
+                [style.--game-color]="getGameColor(game.id)"
+              >
+                <mat-icon [svgIcon]="game.id"></mat-icon>
+                <span>{{ game.name }}</span>
+              </button>
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="mobile-section mobile-section-history">
+        <div class="mobile-section-content">
+          <h3 class="mobile-section-title">History</h3>
+          @if (historyNicknames.length > 0) {
+          <div class="mobile-nicknames-list">
+            @for (historyItem of historyNicknames; track historyItem.id) {
+            <div class="mobile-nickname-card">
+              <div class="mobile-nickname-text">{{ historyItem.nickname }}</div>
+              <div class="mobile-nickname-actions">
+                <button
+                  class="mobile-action-button"
+                  (click)="copyNickname(historyItem.nickname)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  title="Copy"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+                <button
+                  class="mobile-action-button"
+                  [class.liked]="historyItem.liked"
+                  (click)="toggleLike(historyItem.id)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  title="Favorite"
+                >
+                  <mat-icon>{{ historyItem.liked ? 'star' : 'star_border' }}</mat-icon>
+                </button>
+                <button
+                  class="mobile-action-button"
+                  (click)="removeFromHistory(historyItem.id)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  title="Remove"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+            }
+          </div>
+          } @else {
+          <div class="mobile-empty-state">
+            <mat-icon>history</mat-icon>
+            <span>No history yet</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="mobile-section mobile-section-spin">
+        <div class="mobile-section-content">
+          <div class="mobile-logo-container">
+            <img src="/assets/images/nickspin-logo.png" alt="NickSpin" class="mobile-app-logo" />
+            <p class="mobile-app-subtitle">AI nickname generator</p>
+          </div>
+          <button
+            class="mobile-spin-button"
+            [style.background-color]="currentGameAccentColor()"
+            [style.--game-color]="currentGameAccentColor()"
+            (click)="generateNickname()"
+            [disabled]="isLoading"
+          >
+            {{ !isLoading ? 'Spin' : 'Generating..' }}
+            <mat-icon [class.spinning]="isLoading">sync</mat-icon>
+          </button>
+          <div class="mobile-nicknames-container">
+            @if (isLoading) {
+            <div class="mobile-loading-spinner" [style.--game-color]="currentGameAccentColor()">
+              <mat-icon class="spinning-icon">sync</mat-icon>
+              <span>Generating nicknames...</span>
+            </div>
+            } @else if (generatedNicknames.length > 0) {
+            @for (nicknameItem of generatedNicknames; track nicknameItem.id) {
+            <div class="mobile-nickname-card">
+              <div class="mobile-nickname-text">{{ nicknameItem.nickname }}</div>
+              <div class="mobile-nickname-actions">
+                <button
+                  class="mobile-action-button"
+                  (click)="copyNickname(nicknameItem.nickname)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  title="Copy"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+                <button
+                  class="mobile-action-button"
+                  [class.liked]="nicknameItem.liked"
+                  (click)="toggleLike(nicknameItem.id)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  title="Favorite"
+                >
+                  <mat-icon>{{ nicknameItem.liked ? 'star' : 'star_border' }}</mat-icon>
+                </button>
+              </div>
+            </div>
+            }
+            } @else {
+            <div class="mobile-empty-state" [style.--game-color]="currentGameAccentColor()">
+              <mat-icon>casino</mat-icon>
+              <span>Click Spin to generate nicknames</span>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-section mobile-section-favorites">
+        <div class="mobile-section-content">
+          <h3 class="mobile-section-title">Favorites</h3>
+          @if (favoriteNicknames.length > 0) {
+          <div class="mobile-nicknames-list">
+            @for (favoriteItem of favoriteNicknames; track favoriteItem.id) {
+            <div class="mobile-nickname-card">
+              <div class="mobile-nickname-text">{{ favoriteItem.nickname }}</div>
+              <div class="mobile-nickname-actions">
+                <button
+                  class="mobile-action-button"
+                  (click)="copyNickname(favoriteItem.nickname)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  title="Copy"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+                <button
+                  class="mobile-action-button"
+                  (click)="removeFromFavorites(favoriteItem.id)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  title="Remove"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+            }
+          </div>
+          } @else {
+          <div class="mobile-empty-state">
+            <mat-icon>star</mat-icon>
+            <span>No favorites yet</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="mobile-section mobile-section-filters">
+        <div class="mobile-section-content">
+          <h3 class="mobile-section-title">Filters</h3>
+          <div class="mobile-filters-container">
+            <div class="mobile-filter-item">
+              <div class="mobile-filter-header">
+                <mat-icon>straighten</mat-icon>
+                <span class="mobile-filter-name">Length</span>
+              </div>
+              <div class="mobile-filter-content">
+                <div class="mobile-radio-group">
+                  @for (option of options; track option.value) {
+                  <label
+                    class="mobile-radio-option"
+                    [class.active]="selectedLength === option.value"
+                    (click)="selectLength(option.value)"
+                  >
+                    <div class="mobile-radio-circle"></div>
+                    <span>{{ option.label }}</span>
+                    <input type="radio" [value]="option.value" name="length" hidden />
+                  </label>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-filter-item">
+              <div class="mobile-filter-header">
+                <mat-icon>auto_awesome</mat-icon>
+                <span class="mobile-filter-name">AI Customization</span>
+              </div>
+              <div class="mobile-filter-content">
+                <div class="mobile-ai-input-wrapper">
+                  <textarea
+                    class="mobile-ai-textarea"
+                    placeholder="Describe your perfect nickname..."
+                    [(ngModel)]="aiWishes"
+                    maxlength="112"
+                  ></textarea>
+                  <div class="mobile-ai-hint">{{ aiWishes.length }}/112</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-filter-item">
+              <div class="mobile-filter-header">
+                <mat-icon>numbers</mat-icon>
+                <span class="mobile-filter-name">Numbers</span>
+              </div>
+              <div class="mobile-filter-content">
+                <div class="mobile-toggle-group">
+                  <label class="mobile-toggle-label">
+                    <div
+                      class="mobile-toggle-switch"
+                      [class.active]="numbers"
+                      (click)="numbers = !numbers"
+                    >
+                      <div class="mobile-toggle-knob"></div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-filter-item">
+              <div class="mobile-filter-header">
+                <mat-icon>language</mat-icon>
+                <span class="mobile-filter-name">Language</span>
+              </div>
+              <div class="mobile-filter-content">
+                <div
+                  class="mobile-custom-dropdown"
+                  data-dropdown="language"
+                  (click)="toggleDropdown('language'); $event.stopPropagation()"
+                >
+                  <span class="mobile-dropdown-selected">{{ getLanguageName(selectedLanguage) }}</span>
+                  <svg
+                    class="mobile-dropdown-arrow"
+                    [class.open]="dropdownOpen"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                  >
+                    <path fill="currentColor" d="M4 6l4 4 4-4z" />
+                  </svg>
+                  @if (dropdownOpen) {
+                  <div class="mobile-dropdown-menu">
+                    @for (lang of languages; track lang.code) {
+                    <div class="mobile-dropdown-item" (click)="selectLanguage(lang)">
+                      {{ lang.name }}
+                    </div>
+                    }
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-filter-item">
+              <div class="mobile-filter-header">
+                <mat-icon>star</mat-icon>
+                <span class="mobile-filter-name">Special Symbols</span>
+              </div>
+              <div class="mobile-filter-content">
+                <div
+                  class="mobile-custom-dropdown"
+                  data-dropdown="specialSymbols"
+                  (click)="toggleDropdown('specialSymbols'); $event.stopPropagation()"
+                >
+                  <span class="mobile-dropdown-selected">{{
+                    specialSymbols === 'any' ? 'Any' : specialSymbols === 'yes' ? 'Yes' : 'No'
+                  }}</span>
+                  <svg
+                    class="mobile-dropdown-arrow"
+                    [class.open]="specialSymbolsDropdownOpen"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                  >
+                    <path fill="currentColor" d="M4 6l4 4 4-4z" />
+                  </svg>
+                  @if (specialSymbolsDropdownOpen) {
+                  <div class="mobile-dropdown-menu">
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="specialSymbols = 'any'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Any
+                    </div>
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="specialSymbols = 'yes'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Yes
+                    </div>
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="specialSymbols = 'no'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      No
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-filter-item">
+              <div class="mobile-filter-header">
+                <mat-icon>palette</mat-icon>
+                <span class="mobile-filter-name">Theme / Style</span>
+              </div>
+              <div class="mobile-filter-content">
+                <div
+                  class="mobile-custom-dropdown"
+                  data-dropdown="theme"
+                  (click)="toggleDropdown('theme'); $event.stopPropagation()"
+                >
+                  <span class="mobile-dropdown-selected">{{
+                    theme === 'any'
+                      ? 'Any'
+                      : theme === 'dark'
+                      ? 'Dark'
+                      : theme === 'light'
+                      ? 'Light'
+                      : theme === 'cyberpunk'
+                      ? 'Cyberpunk'
+                      : theme === 'fantasy'
+                      ? 'Fantasy'
+                      : theme === 'sci-fi'
+                      ? 'Sci-Fi'
+                      : theme
+                  }}</span>
+                  <svg
+                    class="mobile-dropdown-arrow"
+                    [class.open]="themeDropdownOpen"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                  >
+                    <path fill="currentColor" d="M4 6l4 4 4-4z" />
+                  </svg>
+                  @if (themeDropdownOpen) {
+                  <div class="mobile-dropdown-menu">
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="theme = 'any'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Any
+                    </div>
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="theme = 'dark'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Dark
+                    </div>
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="theme = 'light'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Light
+                    </div>
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="theme = 'cyberpunk'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Cyberpunk
+                    </div>
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="theme = 'fantasy'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Fantasy
+                    </div>
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="theme = 'sci-fi'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Sci-Fi
+                    </div>
+                    <div
+                      class="mobile-dropdown-item"
+                      (click)="theme = 'minimalist'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      Minimalist
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-filter-item">
+              <div class="mobile-filter-header">
+                <mat-icon>block</mat-icon>
+                <span class="mobile-filter-name">Allow Banned Words</span>
+              </div>
+              <div class="mobile-filter-content">
+                <div class="mobile-toggle-group">
+                  <label class="mobile-toggle-label">
+                    <div
+                      class="mobile-toggle-switch"
+                      [class.active]="allowBanned"
+                      (click)="allowBanned = !allowBanned"
+                    >
+                      <div class="mobile-toggle-knob"></div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="mobile-filter-item">
+              <div class="mobile-filter-header">
+                <mat-icon>people</mat-icon>
+                <span class="mobile-filter-name">Gender</span>
+              </div>
+              <div class="mobile-filter-content">
+                <div class="mobile-radio-group">
+                  <label class="mobile-radio-option" [class.active]="selectedGender === 'male'">
+                    <input
+                      type="radio"
+                      name="gender"
+                      [value]="'male'"
+                      [(ngModel)]="selectedGender"
+                      hidden
+                    />
+                    <div class="mobile-radio-circle"></div>
+                    <span>Male</span>
+                  </label>
+                  <label class="mobile-radio-option" [class.active]="selectedGender === 'female'">
+                    <input
+                      type="radio"
+                      name="gender"
+                      [value]="'female'"
+                      [(ngModel)]="selectedGender"
+                      hidden
+                    />
+                    <div class="mobile-radio-circle"></div>
+                    <span>Female</span>
+                  </label>
+                  <label class="mobile-radio-option" [class.active]="selectedGender === 'any'">
+                    <input
+                      type="radio"
+                      name="gender"
+                      [value]="'any'"
+                      [(ngModel)]="selectedGender"
+                      hidden
+                    />
+                    <div class="mobile-radio-circle"></div>
+                    <span>Any</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="app-container" [class.shake-panels]="shouldShakePanels" [class.generating]="isLoading">
   <div class="left-panel-wrapper">
     <aside class="sidebar" [class.pinned]="sidebarPinned">
@@ -370,28 +892,6 @@
           </div>
         </div>
 
-        <!-- <div class="filter-item">
-          <div class="filter-icon-wrapper">
-            <mat-icon class="filter-icon">workspace_premium</mat-icon>
-          </div>
-          <div class="filter-card">
-            <div class="filter-content">
-              <div class="toggle-group">
-                <label class="toggle-label">
-                  <span class="toggle-name">Pro Style</span>
-                  <div
-                    class="toggle-switch"
-                    [class.active]="proPlayerStyle"
-                    (click)="proPlayerStyle = !proPlayerStyle"
-                  >
-                    <div class="toggle-knob"></div>
-                  </div>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
         <div class="filter-item">
           <div class="filter-icon-wrapper">
             <mat-icon class="filter-icon">star</mat-icon>
@@ -529,152 +1029,6 @@
             </div>
           </div>
         </div>
-
-        <!-- <div class="filter-item">
-          <div class="filter-icon-wrapper">
-            <mat-icon class="filter-icon">sentiment_satisfied</mat-icon>
-          </div>
-          <div class="filter-card">
-            <div class="filter-content">
-              <label class="dropdown-label">Tone</label>
-              <div
-                class="custom-dropdown"
-                data-dropdown="tone"
-                (click)="toggleDropdown('tone'); $event.stopPropagation()"
-              >
-                <span class="dropdown-selected">{{
-                  tone === 'neutral'
-                    ? 'Neutral'
-                    : tone === 'aggressive'
-                    ? 'Aggressive'
-                    : tone === 'friendly'
-                    ? 'Friendly'
-                    : tone === 'mysterious'
-                    ? 'Mysterious'
-                    : tone === 'funny'
-                    ? 'Funny'
-                    : tone
-                }}</span>
-                <svg
-                  class="dropdown-arrow"
-                  [class.open]="toneDropdownOpen"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                >
-                  <path fill="currentColor" d="M4 6l4 4 4-4z" />
-                </svg>
-                @if (toneDropdownOpen) {
-                <div class="dropdown-menu" [class.dropdown-menu-top]="toneMenuTop">
-                  <div
-                    class="dropdown-item"
-                    (click)="tone = 'neutral'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Neutral
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="tone = 'aggressive'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Aggressive
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="tone = 'friendly'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Friendly
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="tone = 'mysterious'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Mysterious
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="tone = 'funny'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Funny
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="tone = 'epic'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Epic
-                  </div>
-                </div>
-                }
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="filter-item">
-          <div class="filter-icon-wrapper">
-            <mat-icon class="filter-icon">fingerprint</mat-icon>
-          </div>
-          <div class="filter-card">
-            <div class="filter-content">
-              <label class="dropdown-label">Uniqueness Level</label>
-              <div
-                class="custom-dropdown"
-                data-dropdown="uniqueness"
-                (click)="toggleDropdown('uniqueness'); $event.stopPropagation()"
-              >
-                <span class="dropdown-selected">{{
-                  uniqueness === 'low'
-                    ? 'Low'
-                    : uniqueness === 'medium'
-                    ? 'Medium'
-                    : uniqueness === 'high'
-                    ? 'High'
-                    : uniqueness === 'very-high'
-                    ? 'Very High'
-                    : uniqueness
-                }}</span>
-                <svg
-                  class="dropdown-arrow"
-                  [class.open]="uniquenessDropdownOpen"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                >
-                  <path fill="currentColor" d="M4 6l4 4 4-4z" />
-                </svg>
-                @if (uniquenessDropdownOpen) {
-                <div class="dropdown-menu" [class.dropdown-menu-top]="uniquenessMenuTop">
-                  <div
-                    class="dropdown-item"
-                    (click)="uniqueness = 'low'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Low
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="uniqueness = 'medium'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Medium
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="uniqueness = 'high'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    High
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="
-                      uniqueness = 'very-high'; closeAllDropdowns(); $event.stopPropagation()
-                    "
-                  >
-                    Very High
-                  </div>
-                </div>
-                }
-              </div>
-            </div>
-          </div>
-        </div> -->
 
         <div class="filter-item">
           <div class="filter-icon-wrapper">
