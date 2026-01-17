@@ -35,6 +35,7 @@ export class App implements OnInit {
   usedNicknames = new Set<string>();
   private nicknameIdCounter = 0;
   protected showCopyNotification: boolean = false;
+  protected shouldShakePanels: boolean = false;
   private readonly FAVORITES_STORAGE_KEY = 'nickspin_favorites';
   private readonly HISTORY_STORAGE_KEY = 'nickspin_history';
   private readonly MAX_HISTORY_SIZE = 100;
@@ -125,11 +126,7 @@ export class App implements OnInit {
       examples: this.nicknameExampleSwitcher.getExamples(this.currentGame().name),
     };
 
-    const historyNicknames: string[] = JSON.parse(
-      localStorage.getItem('nickspin_history') || '[]'
-    ).map((item: { id: string; nickname: string; liked: boolean }) => item.nickname);
-
-    const MAX_ATTEMPTS = 5;
+    const MAX_ATTEMPTS = 10;
     let attempts = 0;
     const uniqueNicknames: string[] = [];
 
@@ -154,17 +151,23 @@ export class App implements OnInit {
             }
 
             nicknames.forEach((nick) => {
-              if (!historyNicknames.includes(nick) && !uniqueNicknames.includes(nick)) {
+              if (!uniqueNicknames.includes(nick)) {
                 uniqueNicknames.push(nick);
               }
             });
 
-            if (uniqueNicknames.length < 5 && attempts < MAX_ATTEMPTS) {
+            if (uniqueNicknames.length < 6 && attempts < MAX_ATTEMPTS) {
               fetchNicknames();
               return;
             }
 
-            this.generatedNicknames = uniqueNicknames.slice(0, 5).map((nick) => {
+            while (uniqueNicknames.length < 6) {
+              uniqueNicknames.push(uniqueNicknames[uniqueNicknames.length - 1] || 'Nickname');
+            }
+
+            const finalNicknames = uniqueNicknames.slice(0, 6);
+
+            this.generatedNicknames = finalNicknames.map((nick) => {
               const newId = `nickname-${Date.now()}-${++this.nicknameIdCounter}`;
               const isFavorite = this.favoriteNicknames.some((fav) => fav.nickname === nick);
               const item = { id: newId, nickname: nick, liked: isFavorite };
@@ -174,6 +177,11 @@ export class App implements OnInit {
 
             this.nickname = this.generatedNicknames[0]?.nickname || '';
             this.isLoading = false;
+            
+            this.shouldShakePanels = true;
+            setTimeout(() => {
+              this.shouldShakePanels = false;
+            }, 650);
           },
           error: (err) => {
             console.error(err);

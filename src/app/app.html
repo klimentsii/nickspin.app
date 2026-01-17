@@ -1,6 +1,6 @@
 <div class="background-layer background-layer-1"></div>
 <div class="background-layer background-layer-2"></div>
-<div class="app-container">
+<div class="app-container" [class.shake-panels]="shouldShakePanels" [class.generating]="isLoading">
   <div class="left-panel-wrapper">
     <aside class="sidebar" [class.pinned]="sidebarPinned">
       <nav class="menu">
@@ -127,8 +127,8 @@
         {{ !isLoading ? 'Spin' : 'Generating..' }}
         <mat-icon [class.spinning]="isLoading">sync</mat-icon>
       </button>
-      @if (isLoading) {
       <div class="nicknames-container">
+        @if (isLoading) {
         <div
           class="loading-spinner"
           [style.--game-color]="currentGameAccentColor()"
@@ -137,9 +137,7 @@
           <mat-icon class="spinning-icon">sync</mat-icon>
           <span>Generating nicknames...</span>
         </div>
-      </div>
-      } @else if (generatedNicknames.length > 0) {
-      <div class="nicknames-container">
+        } @else if (generatedNicknames.length > 0) {
         @for (nicknameItem of generatedNicknames; track nicknameItem.id) {
         <div class="nickname-card">
           <div class="nickname-text">{{ nicknameItem.nickname }}</div>
@@ -166,8 +164,17 @@
           </div>
         </div>
         }
+        } @else {
+        <div
+          class="empty-state"
+          [style.--game-color]="currentGameAccentColor()"
+          [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+        >
+          <mat-icon>casino</mat-icon>
+          <span>Click Spin to generate nicknames</span>
+        </div>
+        }
       </div>
-      }
     </div>
   </main>
 

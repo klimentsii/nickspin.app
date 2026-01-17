@@ -17,6 +17,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
   position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 100vh;
 }
 
 .background-layer {
@@ -47,8 +50,11 @@ body {
   min-height: 100vh;
   gap: 1rem;
   background-color: transparent;
-  padding: 1rem;
+  padding: 4rem;
   transition: grid-template-columns 0.3s ease;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
 
   &:has(.sidebar:hover),
   &:has(.sidebar.pinned) {
@@ -91,10 +97,10 @@ body {
   padding: 2rem 1rem;
   border-radius: 25px;
   margin: 0;
-  transition: all 0.3s ease;
+  transition: width 0.3s ease, all 0.3s ease;
   overflow: hidden;
   position: relative;
-  height: calc(100vh - 2rem);
+  height: calc(100vh - 8rem);
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2),
@@ -109,6 +115,22 @@ body {
   &:hover,
   &.pinned {
     width: 250px;
+  }
+
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s ease, all 0.3s ease;
+
+  .app-container.generating & {
+    animation: moveToGeneratingSidebar 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+      generatingShakeSidebar 2s ease-in-out infinite 0.4s;
+  }
+
+  .app-container:not(.generating) & {
+    animation: returnToOriginalSidebar 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  .app-container:not(.generating).shake-panels & {
+    animation: returnToOriginalSidebar 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+      panelShakeSidebar 0.5s ease-in-out 0.15s;
   }
 }
 
@@ -210,6 +232,20 @@ body {
   .history-panel:hover &,
   .history-panel.pinned & {
     opacity: 1;
+  }
+
+  .favorites-panel &,
+  .history-panel & {
+    color: rgba(255, 255, 255, 0.8);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    &.pinned {
+      color: #ffffff;
+    }
   }
 
   mat-icon {
@@ -394,7 +430,6 @@ body {
 }
 
 .main-content {
-  padding: 3rem 0;
   overflow-y: auto;
 }
 
@@ -460,9 +495,9 @@ body {
   background-color: var(--game-color, $accent);
   border: none;
   border-radius: 12px;
-  padding: 1rem 3rem;
+  padding: 0.875rem 2.5rem;
   color: $text-primary;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.8s ease;
@@ -472,10 +507,10 @@ body {
   justify-content: center;
 
   ::ng-deep mat-icon {
-    font-size: 1.25rem;
-    width: 1.25rem;
-    height: 1.25rem;
-    line-height: 1.25rem;
+    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    line-height: 1.125rem;
     transition: transform 0.3s ease;
 
     &.spinning {
@@ -512,12 +547,19 @@ body {
 
 .nicknames-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 100%;
   margin-top: 2rem;
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  align-items: stretch;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .loading-spinner {
@@ -545,18 +587,54 @@ body {
   }
 }
 
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  width: 100%;
+  min-height: 200px;
+  text-align: center;
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: var(--game-color, $accent);
+    opacity: 0.7;
+  }
+
+  span {
+    color: $text-secondary;
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+}
+
 .nickname-card {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  padding: 0.5rem 0.75rem;
+  padding: 12px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   gap: 0.75rem;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex: 1 1 calc(33.333% - 0.5rem);
+  opacity: 0;
+  animation: fallFromSky 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
 
   &:hover {
     border-color: rgba(255, 255, 255, 0.08);
@@ -566,18 +644,355 @@ body {
   }
 }
 
+@keyframes fallFromSky {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px) scale(0.8) rotate(-5deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(10px) scale(1.05) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes panelShakeSidebar {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  10% {
+    transform: translateX(-3px) translateY(-2px) rotate(-0.5deg);
+  }
+  20% {
+    transform: translateX(3px) translateY(2px) rotate(0.5deg);
+  }
+  30% {
+    transform: translateX(-2px) translateY(1px) rotate(-0.3deg);
+  }
+  40% {
+    transform: translateX(2px) translateY(-1px) rotate(0.3deg);
+  }
+  50% {
+    transform: translateX(-1px) translateY(0) rotate(-0.2deg);
+  }
+  60% {
+    transform: translateX(1px) translateY(0) rotate(0.2deg);
+  }
+  70% {
+    transform: translateX(0) translateY(-1px) rotate(-0.1deg);
+  }
+  80% {
+    transform: translateX(0) translateY(1px) rotate(0.1deg);
+  }
+  90% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes panelShakeSettings {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  15% {
+    transform: translateX(2px) translateY(-2px) rotate(0.4deg);
+  }
+  25% {
+    transform: translateX(-2px) translateY(2px) rotate(-0.4deg);
+  }
+  35% {
+    transform: translateX(1px) translateY(2px) rotate(0.3deg);
+  }
+  45% {
+    transform: translateX(-1px) translateY(-2px) rotate(-0.3deg);
+  }
+  55% {
+    transform: translateX(1px) translateY(0) rotate(0.2deg);
+  }
+  65% {
+    transform: translateX(-1px) translateY(0) rotate(-0.2deg);
+  }
+  75% {
+    transform: translateX(0) translateY(1px) rotate(0.1deg);
+  }
+  85% {
+    transform: translateX(0) translateY(-1px) rotate(-0.1deg);
+  }
+  95% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes panelShakeFavorites {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  12% {
+    transform: translateX(-2px) translateY(2px) rotate(-0.6deg);
+  }
+  22% {
+    transform: translateX(2px) translateY(-2px) rotate(0.6deg);
+  }
+  32% {
+    transform: translateX(-1px) translateY(-1px) rotate(-0.4deg);
+  }
+  42% {
+    transform: translateX(1px) translateY(1px) rotate(0.4deg);
+  }
+  52% {
+    transform: translateX(-1px) translateY(0) rotate(-0.2deg);
+  }
+  62% {
+    transform: translateX(1px) translateY(0) rotate(0.2deg);
+  }
+  72% {
+    transform: translateX(0) translateY(1px) rotate(-0.1deg);
+  }
+  82% {
+    transform: translateX(0) translateY(-1px) rotate(0.1deg);
+  }
+  92% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes panelShakeHistory {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  8% {
+    transform: translateX(3px) translateY(1px) rotate(0.7deg);
+  }
+  18% {
+    transform: translateX(-3px) translateY(-1px) rotate(-0.7deg);
+  }
+  28% {
+    transform: translateX(2px) translateY(-1px) rotate(0.5deg);
+  }
+  38% {
+    transform: translateX(-2px) translateY(1px) rotate(-0.5deg);
+  }
+  48% {
+    transform: translateX(1px) translateY(0) rotate(0.3deg);
+  }
+  58% {
+    transform: translateX(-1px) translateY(0) rotate(-0.3deg);
+  }
+  68% {
+    transform: translateX(0) translateY(-1px) rotate(0.2deg);
+  }
+  78% {
+    transform: translateX(0) translateY(1px) rotate(-0.2deg);
+  }
+  88% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes panelExpandLeft {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(-8px) scale(1.03);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes panelExpandRight {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(8px) scale(1.03);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes panelExpandDownLeft {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(-8px) scale(1.03);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes panelExpandDownRight {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(8px) scale(1.03);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes returnToOriginalSidebar {
+  from {
+    transform: translateX(-15px) translateY(-15px) scale(1.05);
+  }
+  to {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+}
+
+@keyframes moveToGeneratingSidebar {
+  from {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  to {
+    transform: translateX(-15px) translateY(-15px) scale(1.05);
+  }
+}
+
+@keyframes generatingShakeSidebar {
+  0%,
+  100% {
+    transform: translateX(-15px) translateY(-15px) scale(1.05);
+  }
+  25% {
+    transform: translateX(-17px) translateY(-16px) scale(1.05);
+  }
+  50% {
+    transform: translateX(-13px) translateY(-14px) scale(1.05);
+  }
+  75% {
+    transform: translateX(-16px) translateY(-14.5px) scale(1.05);
+  }
+}
+
+@keyframes returnToOriginalSettings {
+  from {
+    transform: translateX(15px) translateY(-15px) scale(1.05);
+  }
+  to {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+}
+
+@keyframes moveToGeneratingSettings {
+  from {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  to {
+    transform: translateX(15px) translateY(-15px) scale(1.05);
+  }
+}
+
+@keyframes generatingShakeSettings {
+  0%,
+  100% {
+    transform: translateX(15px) translateY(-15px) scale(1.05);
+  }
+  25% {
+    transform: translateX(17px) translateY(-16px) scale(1.05);
+  }
+  50% {
+    transform: translateX(13px) translateY(-14px) scale(1.05);
+  }
+  75% {
+    transform: translateX(16px) translateY(-15.5px) scale(1.05);
+  }
+}
+
+@keyframes returnToOriginalFavorites {
+  from {
+    transform: translateX(15px) scale(1.05);
+  }
+  to {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes moveToGeneratingFavorites {
+  from {
+    transform: translateX(0) scale(1);
+  }
+  to {
+    transform: translateX(15px) scale(1.05);
+  }
+}
+
+@keyframes generatingShakeFavorites {
+  0%,
+  100% {
+    transform: translateX(15px) scale(1.05);
+  }
+  25% {
+    transform: translateX(17px) scale(1.05);
+  }
+  50% {
+    transform: translateX(13px) scale(1.05);
+  }
+  75% {
+    transform: translateX(16px) scale(1.05);
+  }
+}
+
+@keyframes returnToOriginalHistory {
+  from {
+    transform: translateX(-15px) scale(1.05);
+  }
+  to {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes moveToGeneratingHistory {
+  from {
+    transform: translateX(0) scale(1);
+  }
+  to {
+    transform: translateX(-15px) scale(1.05);
+  }
+}
+
+@keyframes generatingShakeHistory {
+  0%,
+  100% {
+    transform: translateX(-15px) scale(1.05);
+  }
+  25% {
+    transform: translateX(-17px) scale(1.05);
+  }
+  50% {
+    transform: translateX(-13px) scale(1.05);
+  }
+  75% {
+    transform: translateX(-16px) scale(1.05);
+  }
+}
+
 .nickname-text {
-  flex: 1;
+  width: 100%;
   color: $text-primary;
   font-size: 0.875rem;
   font-weight: 500;
   word-break: break-word;
+  text-align: center;
 }
 
 .nickname-actions {
   display: flex;
-  gap: 0.375rem;
-  flex-shrink: 0;
+  gap: 0.5rem;
+  justify-content: center;
+  width: 100%;
 }
 
 .action-button {
@@ -708,11 +1123,11 @@ body {
   padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 2rem);
+  height: calc(100vh - 8rem);
   gap: 2rem;
   border-radius: 25px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: width 0.3s ease, all 0.3s ease;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2),
     inset 0 0 20px rgba(255, 255, 255, 0.02);
   width: 80px;
@@ -722,6 +1137,22 @@ body {
   &.pinned {
     width: 280px;
     padding: 2rem 1rem;
+  }
+
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s ease, all 0.3s ease;
+
+  .app-container.generating & {
+    animation: moveToGeneratingSettings 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+      generatingShakeSettings 2s ease-in-out infinite 0.4s;
+  }
+
+  .app-container:not(.generating) & {
+    animation: returnToOriginalSettings 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  .app-container:not(.generating).shake-panels & {
+    animation: returnToOriginalSettings 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+      panelShakeSettings 0.5s ease-in-out 0.15s;
   }
 }
 
@@ -1311,7 +1742,7 @@ body {
 }
 
 .favorites-panel {
-  background-color: $bg-secondary;
+  background-color: var(--game-color, $accent);
   border-radius: 25px;
   padding-bottom: 26px;
   margin: 0;
@@ -1321,14 +1752,35 @@ body {
   right: calc(100% + 1rem);
   bottom: 0;
   height: 80px;
-  max-height: 600px;
+  max-height: calc(100vh - 2rem);
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2),
-    inset 0 0 20px rgba(255, 255, 255, 0.02);
+    0 0 60px rgba(var(--game-color-rgb, 99, 102, 241), 0.3);
   width: 80px;
   flex-shrink: 0;
   z-index: 100;
+
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  .app-container.generating & {
+    animation: moveToGeneratingFavorites 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+      generatingShakeFavorites 2s ease-in-out infinite 0.4s;
+  }
+
+  .app-container:not(.generating) & {
+    animation: none;
+    transform: translateX(0) scale(1);
+  }
+
+  .app-container:not(.generating) & {
+    animation: returnToOriginalFavorites 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  .app-container:not(.generating).shake-panels & {
+    animation: returnToOriginalFavorites 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+      panelShakeFavorites 0.5s ease-in-out 0.15s;
+  }
 
   .favorites-content-wrapper {
     opacity: 0;
@@ -1354,11 +1806,11 @@ body {
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.4);
       border-radius: 3px;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.6);
       }
     }
   }
@@ -1367,7 +1819,8 @@ body {
   &.expanded,
   &.pinned {
     width: 300px;
-    height: 300px;
+    height: min(300px, calc(100vh - 2rem - 1rem));
+    max-height: calc(100vh - 2rem - 1rem);
 
     .favorites-button {
       width: 100%;
@@ -1396,12 +1849,13 @@ body {
   gap: 0.75rem;
 
   > mat-icon {
-    color: $text-primary;
+    color: #ffffff;
     font-size: 28px;
     width: 28px;
     height: 28px;
     transition: transform 0.3s ease;
     flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
   }
 
   &:hover > mat-icon {
@@ -1439,20 +1893,21 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: $text-primary;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
   white-space: nowrap;
   justify-content: space-between;
   width: 100%;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 
   span {
-    color: $text-primary;
+    color: #ffffff;
   }
 
   .pin-button mat-icon {
-    color: inherit;
+    color: #ffffff;
   }
 }
 
@@ -1465,8 +1920,8 @@ body {
 }
 
 .favorite-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
   display: flex;
@@ -1474,41 +1929,89 @@ body {
   align-items: center;
   gap: 0.75rem;
   transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 }
 
 .favorite-text {
   flex: 1;
-  color: $text-primary;
+  color: #ffffff;
   font-size: 0.875rem;
   font-weight: 500;
   word-break: break-word;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .favorite-actions {
   display: flex;
   gap: 0.375rem;
   flex-shrink: 0;
+
+  .action-button {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+
+    ::ng-deep mat-icon {
+      color: #ffffff;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.4);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #ffffff;
+      transform: scale(1.1);
+
+      ::ng-deep mat-icon {
+        color: #ffffff;
+      }
+    }
+
+    &.like-button.liked {
+      background: rgba(255, 255, 255, 0.4);
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #ffffff;
+
+      ::ng-deep mat-icon {
+        color: #ffffff;
+      }
+    }
+  }
 }
 
 .remove-button {
   &:hover {
-    background: rgba(255, 0, 0, 0.2);
-    border-color: rgba(255, 0, 0, 0.4);
-    color: #ff4444;
+    background: rgba(255, 100, 100, 0.4);
+    border-color: rgba(255, 150, 150, 0.6);
+    color: #ffffff;
 
     ::ng-deep mat-icon {
-      color: #ff4444;
+      color: #ffffff;
+    }
+  }
+}
+
+.favorite-actions .remove-button,
+.history-actions .remove-button {
+  &:hover {
+    background: rgba(255, 100, 100, 0.5);
+    border-color: rgba(255, 150, 150, 0.7);
+    color: #ffffff;
+
+    ::ng-deep mat-icon {
+      color: #ffffff;
     }
   }
 }
 
 .history-panel {
-  background-color: $bg-secondary;
+  background-color: var(--game-color, $accent);
   border-radius: 25px;
   padding-bottom: 26px;
   margin: 0;
@@ -1518,14 +2021,35 @@ body {
   left: calc(100% + 1rem);
   bottom: 0;
   height: 80px;
-  max-height: 600px;
+  max-height: calc(100vh - 2rem);
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2),
-    inset 0 0 20px rgba(255, 255, 255, 0.02);
+    0 0 60px rgba(var(--game-color-rgb, 99, 102, 241), 0.3);
   width: 80px;
   flex-shrink: 0;
   z-index: 100;
+
+  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  .app-container.generating & {
+    animation: moveToGeneratingHistory 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+      generatingShakeHistory 2s ease-in-out infinite 0.4s;
+  }
+
+  .app-container:not(.generating) & {
+    animation: none;
+    transform: translateX(0) scale(1);
+  }
+
+  .app-container:not(.generating) & {
+    animation: returnToOriginalHistory 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  .app-container:not(.generating).shake-panels & {
+    animation: returnToOriginalHistory 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+      panelShakeHistory 0.5s ease-in-out 0.15s;
+  }
 
   .history-content-wrapper {
     opacity: 0;
@@ -1551,11 +2075,11 @@ body {
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.4);
       border-radius: 3px;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.6);
       }
     }
   }
@@ -1573,7 +2097,8 @@ body {
   &.expanded,
   &.pinned {
     width: 300px;
-    height: 300px;
+    height: min(300px, calc(100vh - 2rem - 1rem));
+    max-height: calc(100vh - 2rem - 1rem);
 
     .history-button {
       width: 100%;
@@ -1602,12 +2127,13 @@ body {
   gap: 0.75rem;
 
   > mat-icon {
-    color: $text-primary;
+    color: #ffffff;
     font-size: 28px;
     width: 28px;
     height: 28px;
     transition: transform 0.3s ease;
     flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
   }
 
   &:hover > mat-icon {
@@ -1645,20 +2171,21 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: $text-primary;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
   white-space: nowrap;
   justify-content: space-between;
   width: 100%;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 
   span {
-    color: $text-primary;
+    color: #ffffff;
   }
 
   .pin-button mat-icon {
-    color: inherit;
+    color: #ffffff;
   }
 }
 
@@ -1671,8 +2198,8 @@ body {
 }
 
 .history-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
   display: flex;
@@ -1680,25 +2207,60 @@ body {
   align-items: center;
   gap: 0.75rem;
   transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 }
 
 .history-text {
   flex: 1;
-  color: $text-primary;
+  color: #ffffff;
   font-size: 0.875rem;
   font-weight: 500;
   word-break: break-word;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .history-actions {
   display: flex;
   gap: 0.375rem;
   flex-shrink: 0;
+
+  .action-button {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+
+    ::ng-deep mat-icon {
+      color: #ffffff;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.4);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #ffffff;
+      transform: scale(1.1);
+
+      ::ng-deep mat-icon {
+        color: #ffffff;
+      }
+    }
+
+    &.like-button.liked {
+      background: rgba(255, 255, 255, 0.4);
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #ffffff;
+
+      ::ng-deep mat-icon {
+        color: #ffffff;
+      }
+    }
+  }
 }
 
 @media (max-width: 1024px) {
