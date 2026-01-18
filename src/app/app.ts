@@ -51,6 +51,10 @@ export class App implements OnInit {
       'game',
       this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/game.svg`)
     );
+    this.iconRegistry.addSvgIcon(
+      'another-game',
+      this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/another-game.svg`)
+    );
 
     if (typeof document !== 'undefined') {
       const initialColor = this.currentGameColor();
@@ -279,22 +283,22 @@ export class App implements OnInit {
   protected readonly currentGameId = computed(() => {
     const url = this.currentUrl().replace(/^\//, '');
     const game = GAMES.find((g) => g.id === url);
-    return game ? game.id : 'roblox';
+    return game ? game.id : 'another-game';
   });
 
   protected readonly currentGameColor = computed(() => {
     const game = GAMES.find((g) => g.id === this.currentGameId());
-    return game ? game.bgColor : GAMES.find((g) => g.id === 'roblox')?.bgColor || '#6B1A1A';
+    return game ? game.bgColor : GAMES.find((g) => g.id === 'another-game')?.bgColor || '#4A4A6B';
   });
 
   protected readonly currentGameAccentColor = computed(() => {
     const game = GAMES.find((g) => g.id === this.currentGameId());
-    return game ? game.color : GAMES.find((g) => g.id === 'roblox')?.color || '#C53B3B';
+    return game ? game.color : GAMES.find((g) => g.id === 'another-game')?.color || '#7A7AC5';
   });
 
   protected readonly currentGame = computed(() => {
     const game = GAMES.find((g) => g.id === this.currentGameId());
-    return game || GAMES.find((g) => g.id === 'roblox') || GAMES[0];
+    return game || GAMES.find((g) => g.id === 'another-game') || GAMES[0];
   });
 
   protected getLanguageName(code: string): string {

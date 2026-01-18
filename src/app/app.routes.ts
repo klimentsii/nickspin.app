@@ -7,7 +7,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/roblox',
+    redirectTo: '/another-game',
     pathMatch: 'full'
   }
 ];

@@ -16,6 +16,13 @@ export interface NicknameApiResponse {
 }
 export const GAMES: Game[] = [
   {
+    name: 'Another Game',
+    id: 'another-game',
+    defaultSettings: null,
+    bgColor: '#4A4A6B',
+    color: '#7A7AC5',
+  },
+  {
     name: 'Counter-Strike 2',
     id: 'cs2',
     defaultSettings: null,
@@ -134,6 +141,19 @@ export const LANGUAGES: Language[] = [
 ];
 
 export const NICKNAME_EXAMPLES_BY_GAME: Record<GameName, string[]> = {
+  'Another Game': [
+    'PlayerOne',
+    'GameMaster',
+    'ProGamer',
+    'ElitePlayer',
+    'Champion',
+    'Legend',
+    'Warrior',
+    'Hero',
+    'Master',
+    'Ace',
+  ],
+
   'Dota 2': [
     'RAMZES666',
     'BuyBackLater',
