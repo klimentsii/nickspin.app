@@ -118,20 +118,6 @@ body {
   }
 
   transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s ease, all 0.3s ease;
-
-  .app-container.generating & {
-    animation: moveToGeneratingSidebar 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-      generatingShakeSidebar 2s ease-in-out infinite 0.4s;
-  }
-
-  .app-container:not(.generating) & {
-    animation: returnToOriginalSidebar 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-
-  .app-container:not(.generating).shake-panels & {
-    animation: returnToOriginalSidebar 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-      panelShakeSidebar 0.5s ease-in-out 0.15s;
-  }
 }
 
 .menu {
@@ -628,11 +614,11 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   flex: 1 1 calc(33.333% - 0.5rem);
   opacity: 0;
-  animation: fallFromSky 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: fadeIn 0.4s ease-out forwards;
 
   @for $i from 1 through 10 {
     &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.1}s;
+      animation-delay: #{$i * 0.05}s;
     }
   }
 
@@ -644,338 +630,14 @@ body {
   }
 }
 
-@keyframes fallFromSky {
-  0% {
+@keyframes fadeIn {
+  from {
     opacity: 0;
-    transform: translateY(-100px) scale(0.8) rotate(-5deg);
+    transform: translateY(10px);
   }
-  50% {
+  to {
     opacity: 1;
-    transform: translateY(10px) scale(1.05) rotate(2deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
-  }
-}
-
-@keyframes panelShakeSidebar {
-  0%,
-  100% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-  10% {
-    transform: translateX(-3px) translateY(-2px) rotate(-0.5deg);
-  }
-  20% {
-    transform: translateX(3px) translateY(2px) rotate(0.5deg);
-  }
-  30% {
-    transform: translateX(-2px) translateY(1px) rotate(-0.3deg);
-  }
-  40% {
-    transform: translateX(2px) translateY(-1px) rotate(0.3deg);
-  }
-  50% {
-    transform: translateX(-1px) translateY(0) rotate(-0.2deg);
-  }
-  60% {
-    transform: translateX(1px) translateY(0) rotate(0.2deg);
-  }
-  70% {
-    transform: translateX(0) translateY(-1px) rotate(-0.1deg);
-  }
-  80% {
-    transform: translateX(0) translateY(1px) rotate(0.1deg);
-  }
-  90% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-}
-
-@keyframes panelShakeSettings {
-  0%,
-  100% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-  15% {
-    transform: translateX(2px) translateY(-2px) rotate(0.4deg);
-  }
-  25% {
-    transform: translateX(-2px) translateY(2px) rotate(-0.4deg);
-  }
-  35% {
-    transform: translateX(1px) translateY(2px) rotate(0.3deg);
-  }
-  45% {
-    transform: translateX(-1px) translateY(-2px) rotate(-0.3deg);
-  }
-  55% {
-    transform: translateX(1px) translateY(0) rotate(0.2deg);
-  }
-  65% {
-    transform: translateX(-1px) translateY(0) rotate(-0.2deg);
-  }
-  75% {
-    transform: translateX(0) translateY(1px) rotate(0.1deg);
-  }
-  85% {
-    transform: translateX(0) translateY(-1px) rotate(-0.1deg);
-  }
-  95% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-}
-
-@keyframes panelShakeFavorites {
-  0%,
-  100% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-  12% {
-    transform: translateX(-2px) translateY(2px) rotate(-0.6deg);
-  }
-  22% {
-    transform: translateX(2px) translateY(-2px) rotate(0.6deg);
-  }
-  32% {
-    transform: translateX(-1px) translateY(-1px) rotate(-0.4deg);
-  }
-  42% {
-    transform: translateX(1px) translateY(1px) rotate(0.4deg);
-  }
-  52% {
-    transform: translateX(-1px) translateY(0) rotate(-0.2deg);
-  }
-  62% {
-    transform: translateX(1px) translateY(0) rotate(0.2deg);
-  }
-  72% {
-    transform: translateX(0) translateY(1px) rotate(-0.1deg);
-  }
-  82% {
-    transform: translateX(0) translateY(-1px) rotate(0.1deg);
-  }
-  92% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-}
-
-@keyframes panelShakeHistory {
-  0%,
-  100% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-  8% {
-    transform: translateX(3px) translateY(1px) rotate(0.7deg);
-  }
-  18% {
-    transform: translateX(-3px) translateY(-1px) rotate(-0.7deg);
-  }
-  28% {
-    transform: translateX(2px) translateY(-1px) rotate(0.5deg);
-  }
-  38% {
-    transform: translateX(-2px) translateY(1px) rotate(-0.5deg);
-  }
-  48% {
-    transform: translateX(1px) translateY(0) rotate(0.3deg);
-  }
-  58% {
-    transform: translateX(-1px) translateY(0) rotate(-0.3deg);
-  }
-  68% {
-    transform: translateX(0) translateY(-1px) rotate(0.2deg);
-  }
-  78% {
-    transform: translateX(0) translateY(1px) rotate(-0.2deg);
-  }
-  88% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-}
-
-@keyframes panelExpandLeft {
-  0% {
-    transform: translateX(0) scale(1);
-  }
-  50% {
-    transform: translateX(-8px) scale(1.03);
-  }
-  100% {
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes panelExpandRight {
-  0% {
-    transform: translateX(0) scale(1);
-  }
-  50% {
-    transform: translateX(8px) scale(1.03);
-  }
-  100% {
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes panelExpandDownLeft {
-  0% {
-    transform: translateX(0) scale(1);
-  }
-  50% {
-    transform: translateX(-8px) scale(1.03);
-  }
-  100% {
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes panelExpandDownRight {
-  0% {
-    transform: translateX(0) scale(1);
-  }
-  50% {
-    transform: translateX(8px) scale(1.03);
-  }
-  100% {
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes returnToOriginalSidebar {
-  from {
-    transform: translateX(-15px) translateY(-15px) scale(1.05);
-  }
-  to {
-    transform: translateX(0) translateY(0) scale(1);
-  }
-}
-
-@keyframes moveToGeneratingSidebar {
-  from {
-    transform: translateX(0) translateY(0) scale(1);
-  }
-  to {
-    transform: translateX(-15px) translateY(-15px) scale(1.05);
-  }
-}
-
-@keyframes generatingShakeSidebar {
-  0%,
-  100% {
-    transform: translateX(-15px) translateY(-15px) scale(1.05);
-  }
-  25% {
-    transform: translateX(-17px) translateY(-16px) scale(1.05);
-  }
-  50% {
-    transform: translateX(-13px) translateY(-14px) scale(1.05);
-  }
-  75% {
-    transform: translateX(-16px) translateY(-14.5px) scale(1.05);
-  }
-}
-
-@keyframes returnToOriginalSettings {
-  from {
-    transform: translateX(15px) translateY(-15px) scale(1.05);
-  }
-  to {
-    transform: translateX(0) translateY(0) scale(1);
-  }
-}
-
-@keyframes moveToGeneratingSettings {
-  from {
-    transform: translateX(0) translateY(0) scale(1);
-  }
-  to {
-    transform: translateX(15px) translateY(-15px) scale(1.05);
-  }
-}
-
-@keyframes generatingShakeSettings {
-  0%,
-  100% {
-    transform: translateX(15px) translateY(-15px) scale(1.05);
-  }
-  25% {
-    transform: translateX(17px) translateY(-16px) scale(1.05);
-  }
-  50% {
-    transform: translateX(13px) translateY(-14px) scale(1.05);
-  }
-  75% {
-    transform: translateX(16px) translateY(-15.5px) scale(1.05);
-  }
-}
-
-@keyframes returnToOriginalFavorites {
-  from {
-    transform: translateX(15px) scale(1.05);
-  }
-  to {
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes moveToGeneratingFavorites {
-  from {
-    transform: translateX(0) scale(1);
-  }
-  to {
-    transform: translateX(15px) scale(1.05);
-  }
-}
-
-@keyframes generatingShakeFavorites {
-  0%,
-  100% {
-    transform: translateX(15px) scale(1.05);
-  }
-  25% {
-    transform: translateX(17px) scale(1.05);
-  }
-  50% {
-    transform: translateX(13px) scale(1.05);
-  }
-  75% {
-    transform: translateX(16px) scale(1.05);
-  }
-}
-
-@keyframes returnToOriginalHistory {
-  from {
-    transform: translateX(-15px) scale(1.05);
-  }
-  to {
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes moveToGeneratingHistory {
-  from {
-    transform: translateX(0) scale(1);
-  }
-  to {
-    transform: translateX(-15px) scale(1.05);
-  }
-}
-
-@keyframes generatingShakeHistory {
-  0%,
-  100% {
-    transform: translateX(-15px) scale(1.05);
-  }
-  25% {
-    transform: translateX(-17px) scale(1.05);
-  }
-  50% {
-    transform: translateX(-13px) scale(1.05);
-  }
-  75% {
-    transform: translateX(-16px) scale(1.05);
+    transform: translateY(0);
   }
 }
 
@@ -1141,19 +803,6 @@ body {
 
   transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s ease, all 0.3s ease;
 
-  .app-container.generating & {
-    animation: moveToGeneratingSettings 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-      generatingShakeSettings 2s ease-in-out infinite 0.4s;
-  }
-
-  .app-container:not(.generating) & {
-    animation: returnToOriginalSettings 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-
-  .app-container:not(.generating).shake-panels & {
-    animation: returnToOriginalSettings 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-      panelShakeSettings 0.5s ease-in-out 0.15s;
-  }
 }
 
 .panel-header {
@@ -1763,24 +1412,6 @@ body {
 
   transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
-  .app-container.generating & {
-    animation: moveToGeneratingFavorites 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-      generatingShakeFavorites 2s ease-in-out infinite 0.4s;
-  }
-
-  .app-container:not(.generating) & {
-    animation: none;
-    transform: translateX(0) scale(1);
-  }
-
-  .app-container:not(.generating) & {
-    animation: returnToOriginalFavorites 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-
-  .app-container:not(.generating).shake-panels & {
-    animation: returnToOriginalFavorites 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-      panelShakeFavorites 0.5s ease-in-out 0.15s;
-  }
 
   .favorites-content-wrapper {
     opacity: 0;
@@ -2032,24 +1663,6 @@ body {
 
   transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
-  .app-container.generating & {
-    animation: moveToGeneratingHistory 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-      generatingShakeHistory 2s ease-in-out infinite 0.4s;
-  }
-
-  .app-container:not(.generating) & {
-    animation: none;
-    transform: translateX(0) scale(1);
-  }
-
-  .app-container:not(.generating) & {
-    animation: returnToOriginalHistory 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-
-  .app-container:not(.generating).shake-panels & {
-    animation: returnToOriginalHistory 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-      panelShakeHistory 0.5s ease-in-out 0.15s;
-  }
 
   .history-content-wrapper {
     opacity: 0;
