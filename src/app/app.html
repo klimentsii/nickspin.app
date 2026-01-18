@@ -161,8 +161,8 @@
               <mat-icon class="spinning-icon">sync</mat-icon>
               <span>Generating nicknames...</span>
             </div>
-            } @else if (generatedNicknames.length > 0) {
-            @for (nicknameItem of generatedNicknames; track nicknameItem.id) {
+            } @else if (generatedNicknames.length > 0) { @for (nicknameItem of generatedNicknames;
+            track nicknameItem.id) {
             <div class="mobile-nickname-card">
               <div class="mobile-nickname-text">{{ nicknameItem.nickname }}</div>
               <div class="mobile-nickname-actions">
@@ -185,8 +185,7 @@
                 </button>
               </div>
             </div>
-            }
-            } @else {
+            } } @else {
             <div class="mobile-empty-state" [style.--game-color]="currentGameAccentColor()">
               <mat-icon>casino</mat-icon>
               <span>Click Spin to generate nicknames</span>
@@ -323,7 +322,9 @@
                   data-dropdown="language"
                   (click)="toggleDropdown('language'); $event.stopPropagation()"
                 >
-                  <span class="mobile-dropdown-selected">{{ getLanguageName(selectedLanguage) }}</span>
+                  <span class="mobile-dropdown-selected">{{
+                    getLanguageName(selectedLanguage)
+                  }}</span>
                   <svg
                     class="mobile-dropdown-arrow"
                     [class.open]="dropdownOpen"
@@ -373,13 +374,17 @@
                   <div class="mobile-dropdown-menu">
                     <div
                       class="mobile-dropdown-item"
-                      (click)="specialSymbols = 'any'; closeAllDropdowns(); $event.stopPropagation()"
+                      (click)="
+                        specialSymbols = 'any'; closeAllDropdowns(); $event.stopPropagation()
+                      "
                     >
                       Any
                     </div>
                     <div
                       class="mobile-dropdown-item"
-                      (click)="specialSymbols = 'yes'; closeAllDropdowns(); $event.stopPropagation()"
+                      (click)="
+                        specialSymbols = 'yes'; closeAllDropdowns(); $event.stopPropagation()
+                      "
                     >
                       Yes
                     </div>
@@ -652,8 +657,8 @@
           <mat-icon class="spinning-icon">sync</mat-icon>
           <span>Generating nicknames...</span>
         </div>
-        } @else if (generatedNicknames.length > 0) {
-        @for (nicknameItem of generatedNicknames; track nicknameItem.id) {
+        } @else if (generatedNicknames.length > 0) { @for (nicknameItem of generatedNicknames; track
+        nicknameItem.id) {
         <div class="nickname-card">
           <div class="nickname-text">{{ nicknameItem.nickname }}</div>
           <div class="nickname-actions">
@@ -678,8 +683,7 @@
             </button>
           </div>
         </div>
-        }
-        } @else {
+        } } @else {
         <div
           class="empty-state"
           [style.--game-color]="currentGameAccentColor()"

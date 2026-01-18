@@ -181,7 +181,6 @@ export class App implements OnInit {
 
             this.nickname = this.generatedNicknames[0]?.nickname || '';
             this.isLoading = false;
-            
             this.shouldShakePanels = true;
             setTimeout(() => {
               this.shouldShakePanels = false;
@@ -862,7 +861,9 @@ export class App implements OnInit {
     this.saveHistory();
   }
 
-  protected selectMobileSection(section: 'games' | 'history' | 'spin' | 'favorites' | 'filters'): void {
+  protected selectMobileSection(
+    section: 'games' | 'history' | 'spin' | 'favorites' | 'filters'
+  ): void {
     this.mobileActiveSection = section;
   }
 

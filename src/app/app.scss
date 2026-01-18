@@ -646,6 +646,7 @@ body {
     height: 3rem;
     color: var(--game-color, $accent);
     opacity: 0.7;
+    transition: all 0.5s ease-in-out;
   }
 
   span {
@@ -857,7 +858,6 @@ body {
   }
 
   transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s ease, all 0.3s ease;
-
 }
 
 .panel-header {
@@ -1450,7 +1450,7 @@ body {
   border-radius: 25px;
   padding-bottom: 26px;
   margin: 0;
-  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.5s ease-in-out;
   overflow: hidden;
   position: absolute;
   right: calc(100% + 1rem);
@@ -1464,9 +1464,6 @@ body {
   width: 80px;
   flex-shrink: 0;
   z-index: 100;
-
-  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-
 
   .favorites-content-wrapper {
     opacity: 0;
@@ -1701,7 +1698,7 @@ body {
   border-radius: 25px;
   padding-bottom: 26px;
   margin: 0;
-  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.5s ease-in-out;
   overflow: hidden;
   position: absolute;
   left: calc(100% + 1rem);
@@ -1716,13 +1713,9 @@ body {
   flex-shrink: 0;
   z-index: 100;
 
-  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-
-
   .history-content-wrapper {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s step-end;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
@@ -2038,7 +2031,7 @@ body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px;
+    padding: 20px 20px 100px 20px;
     background: transparent;
     -webkit-overflow-scrolling: touch;
     flex-shrink: 0;
@@ -2104,6 +2097,7 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
+    margin-top: 20px;
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
@@ -2368,6 +2362,7 @@ body {
     flex-direction: column;
     gap: 16px;
     width: 100%;
+    margin-top: 20px;
   }
 
   .mobile-filter-item {
