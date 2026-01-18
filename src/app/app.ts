@@ -687,6 +687,14 @@ export class App implements OnInit {
         nicknameItem.liked = false;
       }
 
+      const historyItem = this.historyNicknames.find(
+        (item) => item.nickname === favoriteItem.nickname
+      );
+      if (historyItem) {
+        historyItem.liked = false;
+        this.saveHistory();
+      }
+
       this.saveFavorites();
     }
   }
