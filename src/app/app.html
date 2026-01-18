@@ -336,7 +336,7 @@
                   @if (dropdownOpen) {
                   <div class="mobile-dropdown-menu">
                     @for (lang of languages; track lang.code) {
-                    <div class="mobile-dropdown-item" (click)="selectLanguage(lang)">
+                    <div class="mobile-dropdown-item" (click)="selectLanguage(lang); $event.stopPropagation()">
                       {{ lang.name }}
                     </div>
                     }
@@ -935,7 +935,7 @@
                 @if (dropdownOpen) {
                 <div class="dropdown-menu">
                   @for (lang of languages; track lang.code) {
-                  <div class="dropdown-item" (click)="selectLanguage(lang)">
+                  <div class="dropdown-item" (click)="selectLanguage(lang); $event.stopPropagation()">
                     {{ lang.name }}
                   </div>
                   }
