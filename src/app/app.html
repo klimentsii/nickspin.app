@@ -406,21 +406,7 @@
                   data-dropdown="theme"
                   (click)="toggleDropdown('theme'); $event.stopPropagation()"
                 >
-                  <span class="mobile-dropdown-selected">{{
-                    theme === 'any'
-                      ? 'Any'
-                      : theme === 'dark'
-                      ? 'Dark'
-                      : theme === 'light'
-                      ? 'Light'
-                      : theme === 'cyberpunk'
-                      ? 'Cyberpunk'
-                      : theme === 'fantasy'
-                      ? 'Fantasy'
-                      : theme === 'sci-fi'
-                      ? 'Sci-Fi'
-                      : theme
-                  }}</span>
+                  <span class="mobile-dropdown-selected">{{ getThemeLabel(theme) }}</span>
                   <svg
                     class="mobile-dropdown-arrow"
                     [class.open]="themeDropdownOpen"
@@ -432,48 +418,14 @@
                   </svg>
                   @if (themeDropdownOpen) {
                   <div class="mobile-dropdown-menu">
+                    @for (themeOption of currentGameThemes(); track themeOption.value) {
                     <div
                       class="mobile-dropdown-item"
-                      (click)="theme = 'any'; closeAllDropdowns(); $event.stopPropagation()"
+                      (click)="theme = themeOption.value; closeAllDropdowns(); $event.stopPropagation()"
                     >
-                      Any
+                      {{ themeOption.label }}
                     </div>
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="theme = 'dark'; closeAllDropdowns(); $event.stopPropagation()"
-                    >
-                      Dark
-                    </div>
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="theme = 'light'; closeAllDropdowns(); $event.stopPropagation()"
-                    >
-                      Light
-                    </div>
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="theme = 'cyberpunk'; closeAllDropdowns(); $event.stopPropagation()"
-                    >
-                      Cyberpunk
-                    </div>
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="theme = 'fantasy'; closeAllDropdowns(); $event.stopPropagation()"
-                    >
-                      Fantasy
-                    </div>
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="theme = 'sci-fi'; closeAllDropdowns(); $event.stopPropagation()"
-                    >
-                      Sci-Fi
-                    </div>
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="theme = 'minimalist'; closeAllDropdowns(); $event.stopPropagation()"
-                    >
-                      Minimalist
-                    </div>
+                    }
                   </div>
                   }
                 </div>
@@ -1009,21 +961,7 @@
                 data-dropdown="theme"
                 (click)="toggleDropdown('theme'); $event.stopPropagation()"
               >
-                <span class="dropdown-selected">{{
-                  theme === 'any'
-                    ? 'Any'
-                    : theme === 'dark'
-                    ? 'Dark'
-                    : theme === 'light'
-                    ? 'Light'
-                    : theme === 'cyberpunk'
-                    ? 'Cyberpunk'
-                    : theme === 'fantasy'
-                    ? 'Fantasy'
-                    : theme === 'sci-fi'
-                    ? 'Sci-Fi'
-                    : theme
-                }}</span>
+                <span class="dropdown-selected">{{ getThemeLabel(theme) }}</span>
                 <svg
                   class="dropdown-arrow"
                   [class.open]="themeDropdownOpen"
@@ -1035,48 +973,14 @@
                 </svg>
                 @if (themeDropdownOpen) {
                 <div class="dropdown-menu" [class.dropdown-menu-top]="themeMenuTop">
+                  @for (themeOption of currentGameThemes(); track themeOption.value) {
                   <div
                     class="dropdown-item"
-                    (click)="theme = 'any'; closeAllDropdowns(); $event.stopPropagation()"
+                    (click)="theme = themeOption.value; closeAllDropdowns(); $event.stopPropagation()"
                   >
-                    Any
+                    {{ themeOption.label }}
                   </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="theme = 'dark'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Dark
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="theme = 'light'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Light
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="theme = 'cyberpunk'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Cyberpunk
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="theme = 'fantasy'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Fantasy
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="theme = 'sci-fi'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Sci-Fi
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="theme = 'minimalist'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Minimalist
-                  </div>
+                  }
                 </div>
                 }
               </div>

@@ -213,7 +213,10 @@ export class App implements OnInit {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.currentUrl.set(event.url);
+        this.applyGameDefaultSettings(this.currentGameId());
       });
+
+    this.applyGameDefaultSettings(this.currentGameId());
 
     if (typeof document !== 'undefined') {
       document.addEventListener('click', (event: MouseEvent) => {
@@ -300,6 +303,15 @@ export class App implements OnInit {
     const game = GAMES.find((g) => g.id === this.currentGameId());
     return game || GAMES.find((g) => g.id === 'another-game') || GAMES[0];
   });
+
+  protected readonly currentGameThemes = computed(() => {
+    return this.currentGame().themes || [];
+  });
+
+  protected getThemeLabel(value: string): string {
+    const theme = this.currentGameThemes().find((t) => t.value === value);
+    return theme ? theme.label : value;
+  }
 
   protected getLanguageName(code: string): string {
     const lang = this.languages.find((l) => l.code === code);
@@ -414,6 +426,51 @@ export class App implements OnInit {
   }
   protected selectGame(gameId: string): void {
     this.router.navigate(['/', gameId]);
+    this.applyGameDefaultSettings(gameId);
+  }
+
+  private applyGameDefaultSettings(gameId: string): void {
+    const game = this.games.find((g) => g.id === gameId);
+    if (game && game.defaultSettings) {
+      const settings = game.defaultSettings;
+      if (settings.selectedLength !== undefined) {
+        this.selectedLength = settings.selectedLength;
+      }
+      if (settings.aiWishes !== undefined) {
+        this.aiWishes = settings.aiWishes;
+      }
+      if (settings.numbers !== undefined) {
+        this.numbers = settings.numbers;
+      }
+      if (settings.selectedLanguage !== undefined) {
+        this.selectedLanguage = settings.selectedLanguage;
+      }
+      if (settings.specialSymbols !== undefined) {
+        this.specialSymbols = settings.specialSymbols;
+      }
+      if (settings.theme !== undefined) {
+        const availableThemes = game.themes || [];
+        const themeExists = availableThemes.some((t) => t.value === settings.theme);
+        if (themeExists) {
+          this.theme = settings.theme;
+        } else if (availableThemes.length > 0) {
+          this.theme = availableThemes[0].value;
+        }
+      } else if (game.themes && game.themes.length > 0) {
+        this.theme = game.themes[0].value;
+      }
+      if (settings.allowBanned !== undefined) {
+        this.allowBanned = settings.allowBanned;
+      }
+      if (settings.selectedGender !== undefined) {
+        this.selectedGender = settings.selectedGender;
+      }
+    } else if (game && game.themes && game.themes.length > 0) {
+      const currentThemeExists = game.themes.some((t) => t.value === this.theme);
+      if (!currentThemeExists) {
+        this.theme = game.themes[0].value;
+      }
+    }
   }
 
   protected isActive(gameId: string): boolean {
