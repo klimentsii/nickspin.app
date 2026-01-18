@@ -80,7 +80,21 @@
 
       <div class="mobile-section mobile-section-history">
         <div class="mobile-section-content">
-          <h3 class="mobile-section-title">History</h3>
+          <div class="mobile-section-header">
+            <h3 class="mobile-section-title">History</h3>
+            @if (historyNicknames.length > 0) {
+            <button
+              class="mobile-clear-button"
+              (click)="clearAllHistory()"
+              [style.--game-color]="currentGameAccentColor()"
+              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+              title="Clear all"
+            >
+              <mat-icon>delete_sweep</mat-icon>
+              <span>Clear</span>
+            </button>
+            }
+          </div>
           @if (historyNicknames.length > 0) {
           <div class="mobile-nicknames-list">
             @for (historyItem of historyNicknames; track historyItem.id) {
@@ -184,7 +198,21 @@
 
       <div class="mobile-section mobile-section-favorites">
         <div class="mobile-section-content">
-          <h3 class="mobile-section-title">Favorites</h3>
+          <div class="mobile-section-header">
+            <h3 class="mobile-section-title">Favorites</h3>
+            @if (favoriteNicknames.length > 0) {
+            <button
+              class="mobile-clear-button"
+              (click)="clearAllFavorites()"
+              [style.--game-color]="currentGameAccentColor()"
+              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+              title="Clear all"
+            >
+              <mat-icon>delete_sweep</mat-icon>
+              <span>Clear</span>
+            </button>
+            }
+          </div>
           @if (favoriteNicknames.length > 0) {
           <div class="mobile-nicknames-list">
             @for (favoriteItem of favoriteNicknames; track favoriteItem.id) {
@@ -577,15 +605,28 @@
         <div class="history-header">
           <h3 class="history-title">
             <span>History</span>
-            <button
-              class="pin-button"
-              (click)="toggleHistoryPanelPin(); $event.stopPropagation()"
-              [class.pinned]="historyPanelPinned"
-              [style.--game-color]="currentGameAccentColor()"
-              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-            >
-              <mat-icon>{{ historyPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
-            </button>
+            <div class="panel-header-actions">
+              @if (historyNicknames.length > 0) {
+              <button
+                class="clear-button"
+                (click)="clearAllHistory(); $event.stopPropagation()"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Clear all"
+              >
+                <mat-icon>delete_sweep</mat-icon>
+              </button>
+              }
+              <button
+                class="pin-button"
+                (click)="toggleHistoryPanelPin(); $event.stopPropagation()"
+                [class.pinned]="historyPanelPinned"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+              >
+                <mat-icon>{{ historyPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+              </button>
+            </div>
           </h3>
         </div>
       </div>
@@ -724,15 +765,28 @@
         <div class="favorites-header">
           <h3 class="favorites-title">
             <span>Favorites</span>
-            <button
-              class="pin-button"
-              (click)="toggleFavoritesPanelPin(); $event.stopPropagation()"
-              [class.pinned]="favoritesPanelPinned"
-              [style.--game-color]="currentGameAccentColor()"
-              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-            >
-              <mat-icon>{{ favoritesPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
-            </button>
+            <div class="panel-header-actions">
+              @if (favoriteNicknames.length > 0) {
+              <button
+                class="clear-button"
+                (click)="clearAllFavorites(); $event.stopPropagation()"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Clear all"
+              >
+                <mat-icon>delete_sweep</mat-icon>
+              </button>
+              }
+              <button
+                class="pin-button"
+                (click)="toggleFavoritesPanelPin(); $event.stopPropagation()"
+                [class.pinned]="favoritesPanelPinned"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+              >
+                <mat-icon>{{ favoritesPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+              </button>
+            </div>
           </h3>
         </div>
       </div>

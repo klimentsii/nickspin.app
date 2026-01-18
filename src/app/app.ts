@@ -782,6 +782,25 @@ export class App implements OnInit {
     this.saveHistory();
   }
 
+  protected clearAllHistory(): void {
+    this.historyNicknames = [];
+    this.saveHistory();
+  }
+
+  protected clearAllFavorites(): void {
+    this.favoriteNicknames = [];
+    this.saveFavorites();
+
+    this.generatedNicknames.forEach((item) => {
+      item.liked = false;
+    });
+
+    this.historyNicknames.forEach((item) => {
+      item.liked = false;
+    });
+    this.saveHistory();
+  }
+
   protected selectMobileSection(section: 'games' | 'history' | 'spin' | 'favorites' | 'filters'): void {
     this.mobileActiveSection = section;
   }
