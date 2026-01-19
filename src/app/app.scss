@@ -14,8 +14,8 @@ $hover-bg: #2a2a2a5e;
 
 body {
   color: $text-primary;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
@@ -97,13 +97,17 @@ body {
   padding: 2rem 1rem;
   border-radius: 25px;
   margin: 0;
-  transition: width 0.3s ease, all 0.3s ease;
+  transition:
+    width 0.3s ease,
+    all 0.3s ease;
   overflow: hidden;
   position: relative;
   height: calc(100vh - 8rem);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2),
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 0, 0, 0.2),
     inset 0 0 20px rgba(255, 255, 255, 0.02);
   width: 80px;
   flex-shrink: 0;
@@ -117,7 +121,10 @@ body {
     width: 250px;
   }
 
-  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s ease, all 0.3s ease;
+  transition:
+    transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    width 0.3s ease,
+    all 0.3s ease;
 }
 
 .menu {
@@ -406,7 +413,8 @@ body {
 
   .menu-link.active & {
     background-color: rgba(var(--game-color-rgb, 99, 102, 241), 0.15);
-    box-shadow: 0 0 8px rgba(var(--game-color-rgb, 99, 102, 241), 0.2),
+    box-shadow:
+      0 0 8px rgba(var(--game-color-rgb, 99, 102, 241), 0.2),
       0 0 12px rgba(var(--game-color-rgb, 99, 102, 241), 0.15),
       inset 0 0 8px rgba(var(--game-color-rgb, 99, 102, 241), 0.15);
   }
@@ -506,7 +514,8 @@ body {
 .ai-text {
   color: var(--game-color, $accent);
   font-weight: 600;
-  text-shadow: 0 0 10px rgba(var(--game-color-rgb, 99, 102, 241), 0.5),
+  text-shadow:
+    0 0 10px rgba(var(--game-color-rgb, 99, 102, 241), 0.5),
     0 0 20px rgba(var(--game-color-rgb, 99, 102, 241), 0.3),
     0 0 30px rgba(var(--game-color-rgb, 99, 102, 241), 0.2);
   animation: glow 2s ease-in-out infinite alternate;
@@ -514,12 +523,14 @@ body {
 
 @keyframes glow {
   from {
-    text-shadow: 0 0 10px rgba(var(--game-color-rgb, 99, 102, 241), 0.5),
+    text-shadow:
+      0 0 10px rgba(var(--game-color-rgb, 99, 102, 241), 0.5),
       0 0 20px rgba(var(--game-color-rgb, 99, 102, 241), 0.3),
       0 0 30px rgba(var(--game-color-rgb, 99, 102, 241), 0.2);
   }
   to {
-    text-shadow: 0 0 15px rgba(var(--game-color-rgb, 99, 102, 241), 0.7),
+    text-shadow:
+      0 0 15px rgba(var(--game-color-rgb, 99, 102, 241), 0.7),
       0 0 25px rgba(var(--game-color-rgb, 99, 102, 241), 0.5),
       0 0 35px rgba(var(--game-color-rgb, 99, 102, 241), 0.3);
   }
@@ -753,11 +764,16 @@ body {
   }
 
   &.like-button {
-    transition: background 0.5s ease, border-color 0.5s ease, color 0.5s ease,
+    transition:
+      background 0.5s ease,
+      border-color 0.5s ease,
+      color 0.5s ease,
       transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     ::ng-deep mat-icon {
-      transition: color 0.5s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition:
+        color 0.5s ease,
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     &.liked {
@@ -798,7 +814,9 @@ body {
   gap: 0.5rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   z-index: 10000;
-  animation: slideInUp 0.3s ease-out, fadeOut 0.3s ease-in 1.7s;
+  animation:
+    slideInUp 0.3s ease-out,
+    fadeOut 0.3s ease-in 1.7s;
   animation-fill-mode: both;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(var(--game-color-rgb, 99, 102, 241), 0.2);
@@ -845,8 +863,12 @@ body {
   gap: 2rem;
   border-radius: 25px;
   overflow: hidden;
-  transition: width 0.3s ease, all 0.3s ease;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2),
+  transition:
+    width 0.3s ease,
+    all 0.3s ease;
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 0, 0, 0.2),
     inset 0 0 20px rgba(255, 255, 255, 0.02);
   width: 80px;
   flex-shrink: 0;
@@ -1451,7 +1473,11 @@ body {
   border-radius: 25px;
   padding-bottom: 26px;
   margin: 0;
-  transition: width 0.2s ease, height 0.2s ease, background-color 0.5s ease, box-shadow 0.5s ease;
+  transition:
+    width 0.2s ease,
+    height 0.2s ease,
+    background-color 0.5s ease,
+    box-shadow 0.5s ease;
   overflow: hidden;
   position: absolute;
   right: calc(100% + 1rem);
@@ -1460,7 +1486,9 @@ body {
   max-height: calc(100vh - 2rem);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2),
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 0, 0, 0.2),
     0 0 60px rgba(var(--game-color-rgb, 99, 102, 241), 0.3);
   width: 80px;
   flex-shrink: 0;
@@ -1469,7 +1497,9 @@ body {
   .favorites-content-wrapper {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s step-end;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s step-end;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
@@ -1514,7 +1544,9 @@ body {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
-      transition: opacity 0.2s ease, visibility 0.01s step-start;
+      transition:
+        opacity 0.2s ease,
+        visibility 0.01s step-start;
     }
   }
 }
@@ -1548,7 +1580,9 @@ body {
   .favorites-header {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s step-end;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s step-end;
     pointer-events: none;
     flex: 1;
     min-width: 0;
@@ -1560,7 +1594,9 @@ body {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity 0.2s ease, visibility 0.01s step-start;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.01s step-start;
 }
 
 .favorites-header {
@@ -1698,7 +1734,11 @@ body {
   border-radius: 25px;
   padding-bottom: 26px;
   margin: 0;
-  transition: width 0.2s ease, height 0.2s ease, background-color 0.5s ease, box-shadow 0.5s ease;
+  transition:
+    width 0.2s ease,
+    height 0.2s ease,
+    background-color 0.5s ease,
+    box-shadow 0.5s ease;
   overflow: hidden;
   position: absolute;
   left: calc(100% + 1rem);
@@ -1707,7 +1747,9 @@ body {
   max-height: calc(100vh - 2rem);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.2),
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 0, 0, 0.2),
     0 0 60px rgba(var(--game-color-rgb, 99, 102, 241), 0.3);
   width: 80px;
   flex-shrink: 0;
@@ -1716,7 +1758,9 @@ body {
   .history-content-wrapper {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s step-end;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s step-end;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
@@ -1770,7 +1814,9 @@ body {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
-      transition: opacity 0.2s ease, visibility 0.01s step-start;
+      transition:
+        opacity 0.2s ease,
+        visibility 0.01s step-start;
     }
   }
 }
@@ -1804,7 +1850,9 @@ body {
   .history-header {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s step-end;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s step-end;
     pointer-events: none;
     flex: 1;
     min-width: 0;
@@ -1816,7 +1864,9 @@ body {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity 0.2s ease, visibility 0.01s step-start;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.01s step-start;
 }
 
 .history-header {
@@ -2031,7 +2081,7 @@ body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px 20px 120px 20px;
+    padding: 20px;
     background: transparent;
     -webkit-overflow-scrolling: touch;
     flex-shrink: 0;
@@ -2123,12 +2173,33 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    text-decoration: none;
 
+    &:visited {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.3);
+      outline-offset: 2px;
+    }
     ::ng-deep mat-icon {
       font-size: 24px;
       width: 24px;
       height: 24px;
       color: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     span {
@@ -2231,7 +2302,10 @@ body {
     }
 
     &.like-button {
-      transition: background 0.5s ease, border-color 0.5s ease, color 0.5s ease,
+      transition:
+        background 0.5s ease,
+        border-color 0.5s ease,
+        color 0.5s ease,
         transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
       &.liked {

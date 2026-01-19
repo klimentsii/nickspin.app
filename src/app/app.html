@@ -61,18 +61,20 @@
           <h3 class="mobile-section-title">Games</h3>
           <ul class="mobile-games-list">
             @for (game of games; track game.id) {
-            <li class="mobile-game-item">
-              <button
-                class="mobile-game-button"
-                [class.active]="isActive(game.id)"
-                (click)="selectGame(game.id)"
-                [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
-                [style.--game-color]="getGameColor(game.id)"
-              >
-                <mat-icon [svgIcon]="game.id"></mat-icon>
-                <span>{{ game.name }}</span>
-              </button>
-            </li>
+              <li class="mobile-game-item">
+                <a
+                  class="mobile-game-button"
+                  [class.active]="isActive(game.id)"
+                  [routerLink]="['/', game.id]"
+                  [attr.href]="'/' + game.id"
+                  (click)="selectGame(game.id)"
+                  [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
+                  [style.--game-color]="getGameColor(game.id)"
+                >
+                  <mat-icon [svgIcon]="game.id"></mat-icon>
+                  <span>{{ game.name }}</span>
+                </a>
+              </li>
             }
           </ul>
         </div>
@@ -83,58 +85,58 @@
           <div class="mobile-section-header">
             <h3 class="mobile-section-title">History</h3>
             @if (historyNicknames.length > 0) {
-            <button
-              class="mobile-clear-button"
-              (click)="clearAllHistory()"
-              [style.--game-color]="currentGameAccentColor()"
-              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-              title="Clear all"
-            >
-              <mat-icon>delete_sweep</mat-icon>
-              <span>Clear</span>
-            </button>
+              <button
+                class="mobile-clear-button"
+                (click)="clearAllHistory()"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Clear all"
+              >
+                <mat-icon>delete_sweep</mat-icon>
+                <span>Clear</span>
+              </button>
             }
           </div>
           @if (historyNicknames.length > 0) {
-          <div class="mobile-nicknames-list">
-            @for (historyItem of historyNicknames; track historyItem.id) {
-            <div class="mobile-nickname-card">
-              <div class="mobile-nickname-text">{{ historyItem.nickname }}</div>
-              <div class="mobile-nickname-actions">
-                <button
-                  class="mobile-action-button"
-                  (click)="copyNickname(historyItem.nickname)"
-                  [style.--game-color]="currentGameAccentColor()"
-                  title="Copy"
-                >
-                  <mat-icon>content_copy</mat-icon>
-                </button>
-                <button
-                  class="mobile-action-button"
-                  [class.liked]="historyItem.liked"
-                  (click)="toggleLike(historyItem.id)"
-                  [style.--game-color]="currentGameAccentColor()"
-                  title="Favorite"
-                >
-                  <mat-icon>{{ historyItem.liked ? 'star' : 'star_border' }}</mat-icon>
-                </button>
-                <button
-                  class="mobile-action-button"
-                  (click)="removeFromHistory(historyItem.id)"
-                  [style.--game-color]="currentGameAccentColor()"
-                  title="Remove"
-                >
-                  <mat-icon>close</mat-icon>
-                </button>
-              </div>
+            <div class="mobile-nicknames-list">
+              @for (historyItem of historyNicknames; track historyItem.id) {
+                <div class="mobile-nickname-card">
+                  <div class="mobile-nickname-text">{{ historyItem.nickname }}</div>
+                  <div class="mobile-nickname-actions">
+                    <button
+                      class="mobile-action-button"
+                      (click)="copyNickname(historyItem.nickname)"
+                      [style.--game-color]="currentGameAccentColor()"
+                      title="Copy"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                    <button
+                      class="mobile-action-button"
+                      [class.liked]="historyItem.liked"
+                      (click)="toggleLike(historyItem.id)"
+                      [style.--game-color]="currentGameAccentColor()"
+                      title="Favorite"
+                    >
+                      <mat-icon>{{ historyItem.liked ? 'star' : 'star_border' }}</mat-icon>
+                    </button>
+                    <button
+                      class="mobile-action-button"
+                      (click)="removeFromHistory(historyItem.id)"
+                      [style.--game-color]="currentGameAccentColor()"
+                      title="Remove"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
             </div>
-            }
-          </div>
           } @else {
-          <div class="mobile-empty-state">
-            <mat-icon>history</mat-icon>
-            <span>No history yet</span>
-          </div>
+            <div class="mobile-empty-state">
+              <mat-icon>history</mat-icon>
+              <span>No history yet</span>
+            </div>
           }
         </div>
       </div>
@@ -157,39 +159,40 @@
           </button>
           <div class="mobile-nicknames-container">
             @if (isLoading) {
-            <div class="mobile-loading-spinner" [style.--game-color]="currentGameAccentColor()">
-              <mat-icon class="spinning-icon">sync</mat-icon>
-              <span>Generating nicknames...</span>
-            </div>
-            } @else if (generatedNicknames.length > 0) { @for (nicknameItem of generatedNicknames;
-            track nicknameItem.id) {
-            <div class="mobile-nickname-card">
-              <div class="mobile-nickname-text">{{ nicknameItem.nickname }}</div>
-              <div class="mobile-nickname-actions">
-                <button
-                  class="mobile-action-button"
-                  (click)="copyNickname(nicknameItem.nickname)"
-                  [style.--game-color]="currentGameAccentColor()"
-                  title="Copy"
-                >
-                  <mat-icon>content_copy</mat-icon>
-                </button>
-                <button
-                  class="mobile-action-button"
-                  [class.liked]="nicknameItem.liked"
-                  (click)="toggleLike(nicknameItem.id)"
-                  [style.--game-color]="currentGameAccentColor()"
-                  title="Favorite"
-                >
-                  <mat-icon>{{ nicknameItem.liked ? 'star' : 'star_border' }}</mat-icon>
-                </button>
+              <div class="mobile-loading-spinner" [style.--game-color]="currentGameAccentColor()">
+                <mat-icon class="spinning-icon">sync</mat-icon>
+                <span>Generating nicknames...</span>
               </div>
-            </div>
-            } } @else {
-            <div class="mobile-empty-state" [style.--game-color]="currentGameAccentColor()">
-              <mat-icon>casino</mat-icon>
-              <span>Click Spin to generate nicknames</span>
-            </div>
+            } @else if (generatedNicknames.length > 0) {
+              @for (nicknameItem of generatedNicknames; track nicknameItem.id) {
+                <div class="mobile-nickname-card">
+                  <div class="mobile-nickname-text">{{ nicknameItem.nickname }}</div>
+                  <div class="mobile-nickname-actions">
+                    <button
+                      class="mobile-action-button"
+                      (click)="copyNickname(nicknameItem.nickname)"
+                      [style.--game-color]="currentGameAccentColor()"
+                      title="Copy"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                    <button
+                      class="mobile-action-button"
+                      [class.liked]="nicknameItem.liked"
+                      (click)="toggleLike(nicknameItem.id)"
+                      [style.--game-color]="currentGameAccentColor()"
+                      title="Favorite"
+                    >
+                      <mat-icon>{{ nicknameItem.liked ? 'star' : 'star_border' }}</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
+            } @else {
+              <div class="mobile-empty-state" [style.--game-color]="currentGameAccentColor()">
+                <mat-icon>casino</mat-icon>
+                <span>Click Spin to generate nicknames</span>
+              </div>
             }
           </div>
         </div>
@@ -200,49 +203,49 @@
           <div class="mobile-section-header">
             <h3 class="mobile-section-title">Favorites</h3>
             @if (favoriteNicknames.length > 0) {
-            <button
-              class="mobile-clear-button"
-              (click)="clearAllFavorites()"
-              [style.--game-color]="currentGameAccentColor()"
-              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-              title="Clear all"
-            >
-              <mat-icon>delete_sweep</mat-icon>
-              <span>Clear</span>
-            </button>
+              <button
+                class="mobile-clear-button"
+                (click)="clearAllFavorites()"
+                [style.--game-color]="currentGameAccentColor()"
+                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                title="Clear all"
+              >
+                <mat-icon>delete_sweep</mat-icon>
+                <span>Clear</span>
+              </button>
             }
           </div>
           @if (favoriteNicknames.length > 0) {
-          <div class="mobile-nicknames-list">
-            @for (favoriteItem of favoriteNicknames; track favoriteItem.id) {
-            <div class="mobile-nickname-card">
-              <div class="mobile-nickname-text">{{ favoriteItem.nickname }}</div>
-              <div class="mobile-nickname-actions">
-                <button
-                  class="mobile-action-button"
-                  (click)="copyNickname(favoriteItem.nickname)"
-                  [style.--game-color]="currentGameAccentColor()"
-                  title="Copy"
-                >
-                  <mat-icon>content_copy</mat-icon>
-                </button>
-                <button
-                  class="mobile-action-button"
-                  (click)="removeFromFavorites(favoriteItem.id)"
-                  [style.--game-color]="currentGameAccentColor()"
-                  title="Remove"
-                >
-                  <mat-icon>close</mat-icon>
-                </button>
-              </div>
+            <div class="mobile-nicknames-list">
+              @for (favoriteItem of favoriteNicknames; track favoriteItem.id) {
+                <div class="mobile-nickname-card">
+                  <div class="mobile-nickname-text">{{ favoriteItem.nickname }}</div>
+                  <div class="mobile-nickname-actions">
+                    <button
+                      class="mobile-action-button"
+                      (click)="copyNickname(favoriteItem.nickname)"
+                      [style.--game-color]="currentGameAccentColor()"
+                      title="Copy"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                    <button
+                      class="mobile-action-button"
+                      (click)="removeFromFavorites(favoriteItem.id)"
+                      [style.--game-color]="currentGameAccentColor()"
+                      title="Remove"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
             </div>
-            }
-          </div>
           } @else {
-          <div class="mobile-empty-state">
-            <mat-icon>star</mat-icon>
-            <span>No favorites yet</span>
-          </div>
+            <div class="mobile-empty-state">
+              <mat-icon>star</mat-icon>
+              <span>No favorites yet</span>
+            </div>
           }
         </div>
       </div>
@@ -259,15 +262,15 @@
               <div class="mobile-filter-content">
                 <div class="mobile-radio-group">
                   @for (option of options; track option.value) {
-                  <label
-                    class="mobile-radio-option"
-                    [class.active]="selectedLength === option.value"
-                    (click)="selectLength(option.value)"
-                  >
-                    <div class="mobile-radio-circle"></div>
-                    <span>{{ option.label }}</span>
-                    <input type="radio" [value]="option.value" name="length" hidden />
-                  </label>
+                    <label
+                      class="mobile-radio-option"
+                      [class.active]="selectedLength === option.value"
+                      (click)="selectLength(option.value)"
+                    >
+                      <div class="mobile-radio-circle"></div>
+                      <span>{{ option.label }}</span>
+                      <input type="radio" [value]="option.value" name="length" hidden />
+                    </label>
                   }
                 </div>
               </div>
@@ -335,13 +338,16 @@
                     <path fill="currentColor" d="M4 6l4 4 4-4z" />
                   </svg>
                   @if (dropdownOpen) {
-                  <div class="mobile-dropdown-menu">
-                    @for (lang of languages; track lang.code) {
-                    <div class="mobile-dropdown-item" (click)="selectLanguage(lang); $event.stopPropagation()">
-                      {{ lang.name }}
+                    <div class="mobile-dropdown-menu">
+                      @for (lang of languages; track lang.code) {
+                        <div
+                          class="mobile-dropdown-item"
+                          (click)="selectLanguage(lang); $event.stopPropagation()"
+                        >
+                          {{ lang.name }}
+                        </div>
+                      }
                     </div>
-                    }
-                  </div>
                   }
                 </div>
               </div>
@@ -371,30 +377,32 @@
                     <path fill="currentColor" d="M4 6l4 4 4-4z" />
                   </svg>
                   @if (specialSymbolsDropdownOpen) {
-                  <div class="mobile-dropdown-menu">
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="
-                        specialSymbols = 'any'; closeAllDropdowns(); $event.stopPropagation()
-                      "
-                    >
-                      Any
+                    <div class="mobile-dropdown-menu">
+                      <div
+                        class="mobile-dropdown-item"
+                        (click)="
+                          specialSymbols = 'any'; closeAllDropdowns(); $event.stopPropagation()
+                        "
+                      >
+                        Any
+                      </div>
+                      <div
+                        class="mobile-dropdown-item"
+                        (click)="
+                          specialSymbols = 'yes'; closeAllDropdowns(); $event.stopPropagation()
+                        "
+                      >
+                        Yes
+                      </div>
+                      <div
+                        class="mobile-dropdown-item"
+                        (click)="
+                          specialSymbols = 'no'; closeAllDropdowns(); $event.stopPropagation()
+                        "
+                      >
+                        No
+                      </div>
                     </div>
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="
-                        specialSymbols = 'yes'; closeAllDropdowns(); $event.stopPropagation()
-                      "
-                    >
-                      Yes
-                    </div>
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="specialSymbols = 'no'; closeAllDropdowns(); $event.stopPropagation()"
-                    >
-                      No
-                    </div>
-                  </div>
                   }
                 </div>
               </div>
@@ -422,16 +430,18 @@
                     <path fill="currentColor" d="M4 6l4 4 4-4z" />
                   </svg>
                   @if (themeDropdownOpen) {
-                  <div class="mobile-dropdown-menu">
-                    @for (themeOption of currentGameThemes(); track themeOption.value) {
-                    <div
-                      class="mobile-dropdown-item"
-                      (click)="theme = themeOption.value; closeAllDropdowns(); $event.stopPropagation()"
-                    >
-                      {{ themeOption.label }}
+                    <div class="mobile-dropdown-menu">
+                      @for (themeOption of currentGameThemes(); track themeOption.value) {
+                        <div
+                          class="mobile-dropdown-item"
+                          (click)="
+                            theme = themeOption.value; closeAllDropdowns(); $event.stopPropagation()
+                          "
+                        >
+                          {{ themeOption.label }}
+                        </div>
+                      }
                     </div>
-                    }
-                  </div>
                   }
                 </div>
               </div>
@@ -531,102 +541,104 @@
         </div>
         <ul class="menu-list">
           @for (game of games; track game.id) {
-          <li class="menu-item">
-            <a
-              (click)="selectGame(game.id); $event.preventDefault()"
-              [class.active]="isActive(game.id)"
-              [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
-              [style.--game-color]="getGameColor(game.id)"
-              [style.--game-color-rgb]="getGameColorRgb(game.id)"
-              class="menu-link"
-            >
-              <span class="game-logo">
-                <mat-icon [svgIcon]="game.id"></mat-icon>
-              </span>
-              <span class="game-name">{{ game.name }}</span>
-            </a>
-          </li>
+            <li class="menu-item">
+              <a
+                [routerLink]="['/', game.id]"
+                [attr.href]="'/' + game.id"
+                (click)="selectGame(game.id)"
+                [class.active]="isActive(game.id)"
+                [style.color]="isActive(game.id) ? getGameColor(game.id) : ''"
+                [style.--game-color]="getGameColor(game.id)"
+                [style.--game-color-rgb]="getGameColorRgb(game.id)"
+                class="menu-link"
+              >
+                <span class="game-logo">
+                  <mat-icon [svgIcon]="game.id"></mat-icon>
+                </span>
+                <span class="game-name">{{ game.name }}</span>
+              </a>
+            </li>
           }
         </ul>
       </nav>
     </aside>
     @if (historyNicknames.length > 0) {
-    <aside
-      class="history-panel"
-      [class.pinned]="historyPanelPinned"
-      [style.--game-color]="currentGameAccentColor()"
-      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-    >
-      <div class="history-button">
-        <mat-icon>history</mat-icon>
-        <div class="history-header">
-          <h3 class="history-title">
-            <span>History</span>
-            <div class="panel-header-actions">
-              @if (historyNicknames.length > 0) {
-              <button
-                class="clear-button"
-                (click)="clearAllHistory(); $event.stopPropagation()"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-                title="Clear all"
-              >
-                <mat-icon>delete_sweep</mat-icon>
-              </button>
-              }
-              <button
-                class="pin-button"
-                (click)="toggleHistoryPanelPin(); $event.stopPropagation()"
-                [class.pinned]="historyPanelPinned"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-              >
-                <mat-icon>{{ historyPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
-              </button>
-            </div>
-          </h3>
-        </div>
-      </div>
-      <div class="history-content-wrapper">
-        <div class="history-content">
-          @for (historyItem of historyNicknames; track historyItem.id) {
-          <div class="history-card">
-            <div class="history-text">{{ historyItem.nickname }}</div>
-            <div class="history-actions">
-              <button
-                class="action-button copy-button"
-                (click)="copyNickname(historyItem.nickname)"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-                title="Copy"
-              >
-                <mat-icon>content_copy</mat-icon>
-              </button>
-              <button
-                class="action-button like-button"
-                [class.liked]="historyItem.liked"
-                (click)="toggleLike(historyItem.id)"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-                title="Favorite"
-              >
-                <mat-icon>{{ historyItem.liked ? 'star' : 'star_border' }}</mat-icon>
-              </button>
-              <button
-                class="action-button remove-button"
-                (click)="removeFromHistory(historyItem.id)"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-                title="Remove"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
+      <aside
+        class="history-panel"
+        [class.pinned]="historyPanelPinned"
+        [style.--game-color]="currentGameAccentColor()"
+        [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+      >
+        <div class="history-button">
+          <mat-icon>history</mat-icon>
+          <div class="history-header">
+            <h3 class="history-title">
+              <span>History</span>
+              <div class="panel-header-actions">
+                @if (historyNicknames.length > 0) {
+                  <button
+                    class="clear-button"
+                    (click)="clearAllHistory(); $event.stopPropagation()"
+                    [style.--game-color]="currentGameAccentColor()"
+                    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                    title="Clear all"
+                  >
+                    <mat-icon>delete_sweep</mat-icon>
+                  </button>
+                }
+                <button
+                  class="pin-button"
+                  (click)="toggleHistoryPanelPin(); $event.stopPropagation()"
+                  [class.pinned]="historyPanelPinned"
+                  [style.--game-color]="currentGameAccentColor()"
+                  [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                >
+                  <mat-icon>{{ historyPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+                </button>
+              </div>
+            </h3>
           </div>
-          }
         </div>
-      </div>
-    </aside>
+        <div class="history-content-wrapper">
+          <div class="history-content">
+            @for (historyItem of historyNicknames; track historyItem.id) {
+              <div class="history-card">
+                <div class="history-text">{{ historyItem.nickname }}</div>
+                <div class="history-actions">
+                  <button
+                    class="action-button copy-button"
+                    (click)="copyNickname(historyItem.nickname)"
+                    [style.--game-color]="currentGameAccentColor()"
+                    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                    title="Copy"
+                  >
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                  <button
+                    class="action-button like-button"
+                    [class.liked]="historyItem.liked"
+                    (click)="toggleLike(historyItem.id)"
+                    [style.--game-color]="currentGameAccentColor()"
+                    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                    title="Favorite"
+                  >
+                    <mat-icon>{{ historyItem.liked ? 'star' : 'star_border' }}</mat-icon>
+                  </button>
+                  <button
+                    class="action-button remove-button"
+                    (click)="removeFromHistory(historyItem.id)"
+                    [style.--game-color]="currentGameAccentColor()"
+                    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                    title="Remove"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </aside>
     }
   </div>
 
@@ -649,133 +661,134 @@
       </button>
       <div class="nicknames-container">
         @if (isLoading) {
-        <div
-          class="loading-spinner"
-          [style.--game-color]="currentGameAccentColor()"
-          [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-        >
-          <mat-icon class="spinning-icon">sync</mat-icon>
-          <span>Generating nicknames...</span>
-        </div>
-        } @else if (generatedNicknames.length > 0) { @for (nicknameItem of generatedNicknames; track
-        nicknameItem.id) {
-        <div class="nickname-card">
-          <div class="nickname-text">{{ nicknameItem.nickname }}</div>
-          <div class="nickname-actions">
-            <button
-              class="action-button copy-button"
-              (click)="copyNickname(nicknameItem.nickname)"
-              [style.--game-color]="currentGameAccentColor()"
-              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-              title="Copy"
-            >
-              <mat-icon>content_copy</mat-icon>
-            </button>
-            <button
-              class="action-button like-button"
-              [class.liked]="nicknameItem.liked"
-              (click)="toggleLike(nicknameItem.id)"
-              [style.--game-color]="currentGameAccentColor()"
-              [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-              title="Favorite"
-            >
-              <mat-icon>{{ nicknameItem.liked ? 'star' : 'star_border' }}</mat-icon>
-            </button>
+          <div
+            class="loading-spinner"
+            [style.--game-color]="currentGameAccentColor()"
+            [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+          >
+            <mat-icon class="spinning-icon">sync</mat-icon>
+            <span>Generating nicknames...</span>
           </div>
-        </div>
-        } } @else {
-        <div
-          class="empty-state"
-          [style.--game-color]="currentGameAccentColor()"
-          [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-        >
-          <mat-icon>casino</mat-icon>
-          <span>Click Spin to generate nicknames</span>
-        </div>
+        } @else if (generatedNicknames.length > 0) {
+          @for (nicknameItem of generatedNicknames; track nicknameItem.id) {
+            <div class="nickname-card">
+              <div class="nickname-text">{{ nicknameItem.nickname }}</div>
+              <div class="nickname-actions">
+                <button
+                  class="action-button copy-button"
+                  (click)="copyNickname(nicknameItem.nickname)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                  title="Copy"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+                <button
+                  class="action-button like-button"
+                  [class.liked]="nicknameItem.liked"
+                  (click)="toggleLike(nicknameItem.id)"
+                  [style.--game-color]="currentGameAccentColor()"
+                  [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                  title="Favorite"
+                >
+                  <mat-icon>{{ nicknameItem.liked ? 'star' : 'star_border' }}</mat-icon>
+                </button>
+              </div>
+            </div>
+          }
+        } @else {
+          <div
+            class="empty-state"
+            [style.--game-color]="currentGameAccentColor()"
+            [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+          >
+            <mat-icon>casino</mat-icon>
+            <span>Click Spin to generate nicknames</span>
+          </div>
         }
       </div>
     </div>
   </main>
 
   @if (showCopyNotification) {
-  <div
-    class="copy-notification"
-    [style.--game-color]="currentGameAccentColor()"
-    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-  >
-    <mat-icon>check_circle</mat-icon>
-    <span>Copied to clipboard!</span>
-  </div>
+    <div
+      class="copy-notification"
+      [style.--game-color]="currentGameAccentColor()"
+      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+    >
+      <mat-icon>check_circle</mat-icon>
+      <span>Copied to clipboard!</span>
+    </div>
   }
 
   <div class="right-panel-wrapper">
     @if (favoriteNicknames.length > 0) {
-    <aside
-      class="favorites-panel"
-      [class.pinned]="favoritesPanelPinned"
-      [style.--game-color]="currentGameAccentColor()"
-      [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-    >
-      <div class="favorites-button">
-        <mat-icon>star</mat-icon>
-        <div class="favorites-header">
-          <h3 class="favorites-title">
-            <span>Favorites</span>
-            <div class="panel-header-actions">
-              @if (favoriteNicknames.length > 0) {
-              <button
-                class="clear-button"
-                (click)="clearAllFavorites(); $event.stopPropagation()"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-                title="Clear all"
-              >
-                <mat-icon>delete_sweep</mat-icon>
-              </button>
-              }
-              <button
-                class="pin-button"
-                (click)="toggleFavoritesPanelPin(); $event.stopPropagation()"
-                [class.pinned]="favoritesPanelPinned"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-              >
-                <mat-icon>{{ favoritesPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
-              </button>
-            </div>
-          </h3>
-        </div>
-      </div>
-      <div class="favorites-content-wrapper">
-        <div class="favorites-content">
-          @for (favoriteItem of favoriteNicknames; track favoriteItem.id) {
-          <div class="favorite-card">
-            <div class="favorite-text">{{ favoriteItem.nickname }}</div>
-            <div class="favorite-actions">
-              <button
-                class="action-button copy-button"
-                (click)="copyNickname(favoriteItem.nickname)"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-                title="Copy"
-              >
-                <mat-icon>content_copy</mat-icon>
-              </button>
-              <button
-                class="action-button remove-button"
-                (click)="removeFromFavorites(favoriteItem.id)"
-                [style.--game-color]="currentGameAccentColor()"
-                [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
-                title="Remove"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
+      <aside
+        class="favorites-panel"
+        [class.pinned]="favoritesPanelPinned"
+        [style.--game-color]="currentGameAccentColor()"
+        [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+      >
+        <div class="favorites-button">
+          <mat-icon>star</mat-icon>
+          <div class="favorites-header">
+            <h3 class="favorites-title">
+              <span>Favorites</span>
+              <div class="panel-header-actions">
+                @if (favoriteNicknames.length > 0) {
+                  <button
+                    class="clear-button"
+                    (click)="clearAllFavorites(); $event.stopPropagation()"
+                    [style.--game-color]="currentGameAccentColor()"
+                    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                    title="Clear all"
+                  >
+                    <mat-icon>delete_sweep</mat-icon>
+                  </button>
+                }
+                <button
+                  class="pin-button"
+                  (click)="toggleFavoritesPanelPin(); $event.stopPropagation()"
+                  [class.pinned]="favoritesPanelPinned"
+                  [style.--game-color]="currentGameAccentColor()"
+                  [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                >
+                  <mat-icon>{{ favoritesPanelPinned ? 'push_pin' : 'push_pin' }}</mat-icon>
+                </button>
+              </div>
+            </h3>
           </div>
-          }
         </div>
-      </div>
-    </aside>
+        <div class="favorites-content-wrapper">
+          <div class="favorites-content">
+            @for (favoriteItem of favoriteNicknames; track favoriteItem.id) {
+              <div class="favorite-card">
+                <div class="favorite-text">{{ favoriteItem.nickname }}</div>
+                <div class="favorite-actions">
+                  <button
+                    class="action-button copy-button"
+                    (click)="copyNickname(favoriteItem.nickname)"
+                    [style.--game-color]="currentGameAccentColor()"
+                    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                    title="Copy"
+                  >
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                  <button
+                    class="action-button remove-button"
+                    (click)="removeFromFavorites(favoriteItem.id)"
+                    [style.--game-color]="currentGameAccentColor()"
+                    [style.--game-color-rgb]="getGameColorRgb(currentGameId())"
+                    title="Remove"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </aside>
     }
     <aside
       class="settings-panel"
@@ -889,13 +902,16 @@
                   <path fill="currentColor" d="M4 6l4 4 4-4z" />
                 </svg>
                 @if (dropdownOpen) {
-                <div class="dropdown-menu">
-                  @for (lang of languages; track lang.code) {
-                  <div class="dropdown-item" (click)="selectLanguage(lang); $event.stopPropagation()">
-                    {{ lang.name }}
+                  <div class="dropdown-menu">
+                    @for (lang of languages; track lang.code) {
+                      <div
+                        class="dropdown-item"
+                        (click)="selectLanguage(lang); $event.stopPropagation()"
+                      >
+                        {{ lang.name }}
+                      </div>
+                    }
                   </div>
-                  }
-                </div>
                 }
               </div>
             </div>
@@ -927,26 +943,30 @@
                   <path fill="currentColor" d="M4 6l4 4 4-4z" />
                 </svg>
                 @if (specialSymbolsDropdownOpen) {
-                <div class="dropdown-menu" [class.dropdown-menu-top]="specialSymbolsMenuTop">
-                  <div
-                    class="dropdown-item"
-                    (click)="specialSymbols = 'any'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Any
+                  <div class="dropdown-menu" [class.dropdown-menu-top]="specialSymbolsMenuTop">
+                    <div
+                      class="dropdown-item"
+                      (click)="
+                        specialSymbols = 'any'; closeAllDropdowns(); $event.stopPropagation()
+                      "
+                    >
+                      Any
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      (click)="
+                        specialSymbols = 'yes'; closeAllDropdowns(); $event.stopPropagation()
+                      "
+                    >
+                      Yes
+                    </div>
+                    <div
+                      class="dropdown-item"
+                      (click)="specialSymbols = 'no'; closeAllDropdowns(); $event.stopPropagation()"
+                    >
+                      No
+                    </div>
                   </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="specialSymbols = 'yes'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    Yes
-                  </div>
-                  <div
-                    class="dropdown-item"
-                    (click)="specialSymbols = 'no'; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    No
-                  </div>
-                </div>
                 }
               </div>
             </div>
@@ -976,16 +996,18 @@
                   <path fill="currentColor" d="M4 6l4 4 4-4z" />
                 </svg>
                 @if (themeDropdownOpen) {
-                <div class="dropdown-menu" [class.dropdown-menu-top]="themeMenuTop">
-                  @for (themeOption of currentGameThemes(); track themeOption.value) {
-                  <div
-                    class="dropdown-item"
-                    (click)="theme = themeOption.value; closeAllDropdowns(); $event.stopPropagation()"
-                  >
-                    {{ themeOption.label }}
+                  <div class="dropdown-menu" [class.dropdown-menu-top]="themeMenuTop">
+                    @for (themeOption of currentGameThemes(); track themeOption.value) {
+                      <div
+                        class="dropdown-item"
+                        (click)="
+                          theme = themeOption.value; closeAllDropdowns(); $event.stopPropagation()
+                        "
+                      >
+                        {{ themeOption.label }}
+                      </div>
+                    }
                   </div>
-                  }
-                </div>
                 }
               </div>
             </div>

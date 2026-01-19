@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { GAMES, Language, LANGUAGES, NicknameApiResponse } from './games.constants';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { NicknameExampleSwitcherService } from './services/nickname-example-switcher.service';
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterLink],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -49,11 +49,11 @@ export class App implements OnInit {
   constructor() {
     this.iconRegistry.addSvgIcon(
       'game',
-      this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/game.svg`)
+      this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/game.svg`),
     );
     this.iconRegistry.addSvgIcon(
       'another-game',
-      this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/another-game.svg`)
+      this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/another-game.svg`),
     );
 
     if (typeof document !== 'undefined') {
@@ -84,10 +84,10 @@ export class App implements OnInit {
         const inactiveLayer = this.currentLayer;
 
         const activeLayerEl = document.querySelector(
-          `.background-layer-${activeLayer}`
+          `.background-layer-${activeLayer}`,
         ) as HTMLElement;
         const inactiveLayerEl = document.querySelector(
-          `.background-layer-${inactiveLayer}`
+          `.background-layer-${inactiveLayer}`,
         ) as HTMLElement;
 
         if (activeLayerEl && inactiveLayerEl) {
@@ -204,7 +204,7 @@ export class App implements OnInit {
     this.games.forEach((game) => {
       this.iconRegistry.addSvgIcon(
         game.id,
-        this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/${game.id}.svg`)
+        this.sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/${game.id}.svg`),
       );
     });
 
@@ -332,7 +332,7 @@ export class App implements OnInit {
   }
 
   protected toggleDropdown(
-    dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness'
+    dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness',
   ): void {
     if (dropdownType !== 'language') this.dropdownOpen = false;
     if (dropdownType !== 'specialSymbols') this.specialSymbolsDropdownOpen = false;
@@ -398,7 +398,7 @@ export class App implements OnInit {
   }
 
   private checkDropdownPosition(
-    dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness'
+    dropdownType: 'language' | 'specialSymbols' | 'theme' | 'tone' | 'uniqueness',
   ): void {
     if (typeof document === 'undefined') return;
 
@@ -704,7 +704,7 @@ export class App implements OnInit {
 
       if (nicknameItem.liked) {
         const exists = this.favoriteNicknames.some(
-          (fav) => fav.nickname === nicknameItem!.nickname
+          (fav) => fav.nickname === nicknameItem!.nickname,
         );
         if (!exists) {
           const favoriteItem = { ...nicknameItem };
@@ -712,12 +712,12 @@ export class App implements OnInit {
         }
       } else {
         this.favoriteNicknames = this.favoriteNicknames.filter(
-          (item) => item.nickname !== nicknameItem!.nickname
+          (item) => item.nickname !== nicknameItem!.nickname,
         );
       }
 
       const historyItem = this.historyNicknames.find(
-        (item) => item.nickname === nicknameItem!.nickname
+        (item) => item.nickname === nicknameItem!.nickname,
       );
       if (historyItem) {
         historyItem.liked = nicknameItem.liked;
@@ -725,7 +725,7 @@ export class App implements OnInit {
       }
 
       const generatedItem = this.generatedNicknames.find(
-        (item) => item.nickname === nicknameItem!.nickname
+        (item) => item.nickname === nicknameItem!.nickname,
       );
       if (generatedItem) {
         generatedItem.liked = nicknameItem.liked;
@@ -741,14 +741,14 @@ export class App implements OnInit {
       this.favoriteNicknames = this.favoriteNicknames.filter((item) => item.id !== id);
 
       const nicknameItem = this.generatedNicknames.find(
-        (item) => item.nickname === favoriteItem.nickname
+        (item) => item.nickname === favoriteItem.nickname,
       );
       if (nicknameItem) {
         nicknameItem.liked = false;
       }
 
       const historyItem = this.historyNicknames.find(
-        (item) => item.nickname === favoriteItem.nickname
+        (item) => item.nickname === favoriteItem.nickname,
       );
       if (historyItem) {
         historyItem.liked = false;
@@ -784,7 +784,7 @@ export class App implements OnInit {
 
   private addToHistory(nicknameItem: { id: string; nickname: string; liked: boolean }): void {
     const existingIndex = this.historyNicknames.findIndex(
-      (item) => item.nickname === nicknameItem.nickname
+      (item) => item.nickname === nicknameItem.nickname,
     );
 
     if (existingIndex !== -1) {
@@ -794,7 +794,7 @@ export class App implements OnInit {
       this.historyNicknames.unshift(existing);
     } else {
       const isFavorite = this.favoriteNicknames.some(
-        (fav) => fav.nickname === nicknameItem.nickname
+        (fav) => fav.nickname === nicknameItem.nickname,
       );
       const historyItem = {
         ...nicknameItem,
@@ -862,7 +862,7 @@ export class App implements OnInit {
   }
 
   protected selectMobileSection(
-    section: 'games' | 'history' | 'spin' | 'favorites' | 'filters'
+    section: 'games' | 'history' | 'spin' | 'favorites' | 'filters',
   ): void {
     this.mobileActiveSection = section;
   }
