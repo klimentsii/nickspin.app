@@ -2019,7 +2019,7 @@ body {
   .mobile-content-slider {
     display: flex;
     width: 500%;
-    height: 100vh;
+    height: calc(100vh - 60px);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
     position: relative;
@@ -2031,7 +2031,7 @@ body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px 20px 100px 20px;
+    padding: 20px 20px 80px 20px;
     background: transparent;
     -webkit-overflow-scrolling: touch;
     flex-shrink: 0;
@@ -2041,9 +2041,10 @@ body {
   .mobile-section-content {
     width: 100%;
     margin: 0 auto;
-    min-height: calc(100vh - 60px);
+    min-height: 100%;
     display: flex;
     flex-direction: column;
+    padding-bottom: 20px;
   }
 
   .mobile-section-header {
