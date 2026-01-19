@@ -851,13 +851,14 @@ body {
   width: 80px;
   flex-shrink: 0;
 
+  &:not(:hover):not(.pinned) {
+    width: 80px;
+  }
+
   &:hover,
   &.pinned {
     width: 280px;
-    padding: 2rem 1rem;
   }
-
-  transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), width 0.3s ease, all 0.3s ease;
 }
 
 .panel-header {
@@ -1450,7 +1451,7 @@ body {
   border-radius: 25px;
   padding-bottom: 26px;
   margin: 0;
-  transition: all 0.5s ease-in-out;
+  transition: width 0.2s ease, height 0.2s ease, background-color 0.5s ease, box-shadow 0.5s ease;
   overflow: hidden;
   position: absolute;
   right: calc(100% + 1rem);
@@ -1468,7 +1469,7 @@ body {
   .favorites-content-wrapper {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s step-end;
+    transition: opacity 0.2s ease, visibility 0.2s step-end;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
@@ -1513,8 +1514,7 @@ body {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s,
-        visibility 0.01s step-start 0.05s;
+      transition: opacity 0.2s ease, visibility 0.01s step-start;
     }
   }
 }
@@ -1548,7 +1548,7 @@ body {
   .favorites-header {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s step-end;
+    transition: opacity 0.2s ease, visibility 0.2s step-end;
     pointer-events: none;
     flex: 1;
     min-width: 0;
@@ -1560,7 +1560,7 @@ body {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s, visibility 0.01s step-start 0.05s;
+  transition: opacity 0.2s ease, visibility 0.01s step-start;
 }
 
 .favorites-header {
@@ -1698,7 +1698,7 @@ body {
   border-radius: 25px;
   padding-bottom: 26px;
   margin: 0;
-  transition: all 0.5s ease-in-out;
+  transition: width 0.2s ease, height 0.2s ease, background-color 0.5s ease, box-shadow 0.5s ease;
   overflow: hidden;
   position: absolute;
   left: calc(100% + 1rem);
@@ -1716,6 +1716,7 @@ body {
   .history-content-wrapper {
     opacity: 0;
     visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s step-end;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
@@ -1769,8 +1770,7 @@ body {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
-      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s,
-        visibility 0.01s step-start 0.05s;
+      transition: opacity 0.2s ease, visibility 0.01s step-start;
     }
   }
 }
@@ -1804,7 +1804,7 @@ body {
   .history-header {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s step-end;
+    transition: opacity 0.2s ease, visibility 0.2s step-end;
     pointer-events: none;
     flex: 1;
     min-width: 0;
@@ -1816,7 +1816,7 @@ body {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s, visibility 0.01s step-start 0.05s;
+  transition: opacity 0.2s ease, visibility 0.01s step-start;
 }
 
 .history-header {
