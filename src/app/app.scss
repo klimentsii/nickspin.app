@@ -2031,7 +2031,7 @@ body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px 20px 80px 20px;
+    padding: 20px 20px 120px 20px;
     background: transparent;
     -webkit-overflow-scrolling: touch;
     flex-shrink: 0;
@@ -2044,7 +2044,7 @@ body {
     min-height: 100%;
     display: flex;
     flex-direction: column;
-    padding-bottom: 20px;
+    padding-bottom: 40px;
   }
 
   .mobile-section-header {
