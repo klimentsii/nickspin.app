@@ -424,7 +424,6 @@ export class App implements OnInit {
     }
   }
   protected selectGame(gameId: string): void {
-    this.router.navigate(['/', gameId]);
     this.applyGameDefaultSettings(gameId);
   }
 
