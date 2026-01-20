@@ -257,28 +257,6 @@ export const GAMES: Game[] = [
     color: '#C5947A',
   },
   {
-    name: 'Cyberpunk 2077',
-    id: 'cyberpunk',
-    defaultSettings: {
-      selectedLength: 'any',
-      numbers: true,
-      selectedLanguage: 'en',
-      specialSymbols: 'yes',
-      theme: 'cyberpunk',
-      allowBanned: false,
-      selectedGender: 'any',
-    },
-    themes: [
-      { value: 'any', label: 'Any' },
-      { value: 'cyberpunk', label: 'Cyberpunk' },
-      { value: 'neon', label: 'Neon' },
-      { value: 'futuristic', label: 'Futuristic' },
-      { value: 'tech', label: 'Tech' },
-    ],
-    bgColor: '#6B1A4A',
-    color: '#C53B94',
-  },
-  {
     name: 'Team Fortress 2',
     id: 'tf2',
     defaultSettings: {
@@ -451,14 +429,6 @@ export const NICKNAME_EXAMPLES_BY_GAME: Record<GameName, string[]> = {
     'LootCouncilVictim',
     'ManaProblems',
     'TankAndSpank',
-  ],
-
-  'Cyberpunk 2077': [
-    'ChromeInMyVeins',
-    'NightCityNPC',
-    'JohnnyWasRight',
-    'GlitchInReality',
-    'CyberPsychosis',
   ],
 
   'Team Fortress 2': [
