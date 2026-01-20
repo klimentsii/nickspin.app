@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "nickspin.app": {
+    "nickspin.com": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -75,10 +75,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "nickspin.app:build:production"
+              "buildTarget": "nickspin.com:build:production"
             },
             "development": {
-              "buildTarget": "nickspin.app:build:development"
+              "buildTarget": "nickspin.com:build:development"
             }
           },
           "defaultConfiguration": "development"
