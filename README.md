@@ -35,3 +35,5 @@ Our fine-tuned model doesn't just mash words. It **creates coherent, vibe-matche
 ### 📚 **Identity Vault**
 
 Save, rank, and export your favorite names. Share sets with friends for feedback.
+
+Game icons powered by our free collection: github.com/klimentsii/games-icons
